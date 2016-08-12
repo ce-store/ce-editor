@@ -1,0 +1,81 @@
+html, body {
+  height: 100%;
+}
+
+h1 {
+  font-family: Anton;
+  color: #34A5DA;
+  font-size: 52px;
+  text-align: center;
+}
+
+textarea {
+  resize: none;
+}
+
+@font-face {
+  font-family: GistUpright;
+  src: url(../fonts/GistUpright.otf);
+}
+
+@font-face {
+  font-family: Anton;
+  src: url(../fonts/Anton.ttf);
+}
+
+.site-container {
+  display: flex;
+  height: 100%;
+}
+
+/* Editor */
+
+.editor {
+  width: 40%;
+  height: 100%;
+  background: #444444;
+  color: #F9F9F9;
+  font-family: consolas;
+}
+
+.edit-area {
+  margin: 10px 20px 20px 20px;
+  width: calc(100% - 40px);
+  height: calc(100% - 167px);
+  background: none;
+  border: none;
+}
+
+.edit-area:focus {
+  outline: none;
+}
+
+.edit-details {
+  height: 50px;
+}
+
+.validation {
+  margin: 0 20px;
+  float: right;
+}
+
+.text-success {
+  color: #56F94D;
+}
+
+.text-failure {
+  color: #FF0000;
+}
+
+/* Visual */
+
+.visual {
+  width: 60%;
+  height: 100%;
+  background-image: url("../images/stripes.png");
+}
+
+.visual-svg {
+  width: 100%;
+  height: 100%;
+}
