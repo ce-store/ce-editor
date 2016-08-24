@@ -1,8 +1,11 @@
 <h1>CE EDITOR</h1>
 
 <textarea class="edit-area" ng-model="ce" ng-change="validate()"></textarea>
+<!-- <div text-angular ng-model="html" class="edit-area"></div> -->
 
 <div class="edit-details">
   <button class="btn" ng-click="update()" ng-disabled="!valid">Update</button>
+  <button class="btn" ng-click="skip()">Skip</button>
+  <button class="btn" ng-click="restart()">Restart</button>
   <span class="validation" ng-class="valid ? 'text-success' : 'text-failure'">{{ validationText }}</span>
 </div>

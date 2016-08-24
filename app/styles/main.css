@@ -52,10 +52,11 @@ textarea {
 
 .edit-details {
   height: 50px;
+  padding: 0 10px;
 }
 
 .validation {
-  margin: 0 20px;
+  padding: 5px 10px;
   float: right;
 }
 
@@ -65,6 +66,18 @@ textarea {
 
 .text-failure {
   color: #FF0000;
+}
+
+/* TextAngular */
+
+.ta-toolbar {
+  display: none;
+}
+
+.edit-area .ta-text {
+  height: 100%;
+  background: transparent;
+  border: none;
 }
 
 /* Visual */
@@ -78,4 +91,14 @@ textarea {
 .visual-svg {
   width: 100%;
   height: 100%;
+}
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
 }

@@ -9,7 +9,8 @@
  * Main module of the application.
  */
 angular.module('ceEditorApp', [
-  'ui.router'
+  'ui.router',
+  'textAngular'
 ])
 
 .config(function($stateProvider, $urlRouterProvider) {

@@ -10,26 +10,33 @@
 angular.module('ceEditorApp')
   .service('visuals', ['ce', function (ce) {
     var visualThings, shapes;
-    var shapesMap = {
-      circle: [],
-      square: []
+    var map = {};
+    var graph = {
+      nodes: [],
+      links: []
     };
 
-    var getShapesMap = function() {
-      return shapesMap;
+    var getGraph = function() {
+      // console.log(graph);
+      return graph;
     };
 
     var update = function() {
-      shapesMap = {
-        circle: [],
-        square: []
-      };
+      // graph = {
+      //   nodes: [],
+      //   links: []
+      // };
 
       ce.getVisualThings().then(function(response) {
         visualThings = response.data;
 
         ce.getShapes().then(function(response) {
           shapes = response.data;
+          console.log(visualThings);
+
+          var addLink = function(like) {
+            graph.links.push({source: thing._id, target: like});
+          };
 
           for (var i = 0; i < visualThings.length; ++i) {
             var thing = visualThings[i];
@@ -38,24 +45,38 @@ angular.module('ceEditorApp')
 
             if (renderedBy) {
               if (renderedBy.indexOf('Square') > -1) {
-                shapesMap.square.push(thing._id);
+                // do something
               } else if (renderedBy.indexOf('Circle') > -1) {
-                var circleThing = {
-                  id: thing._id,
-                  shows: []
-                };
+                // var circleThing = {
+                //   id: thing._id,
+                //   shows: []
+                // };
 
+                var showsList = [];
                 if (shows) {
                   for (var j = 0; j < shows.length; ++j) {
                     var show = shows[j].toLowerCase();
-                    circleThing.shows.push(show);
+                    showsList.push(show);
                   }
+                  // circleThing.shows = showsList;
                 }
 
-                shapesMap.circle.push(circleThing);
+                var index = map[thing._id];
+                if (typeof index === 'undefined' || index === null) {
+                  graph.nodes.push({id: thing._id, shows: showsList});
+                  map[thing._id] = graph.nodes.length - 1;
+                } else {
+                  graph.nodes[index].shows = showsList;
+                }
+
+                var likes = thing.property_values.likes;
+                if (likes) {
+                  likes.forEach(addLink);
+                }
               }
             }
           }
+          console.log(map);
 
           notifyObservers();
         });
@@ -75,7 +96,7 @@ angular.module('ceEditorApp')
     };
 
     return {
-      shapesMap: getShapesMap,
+      graph: getGraph,
       update: update,
       registerObserverCallback: registerObserverCallback
     };
