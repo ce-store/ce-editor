@@ -24,12 +24,12 @@ angular.module('ceEditorApp')
       // '-- Sentences beginning with a double dash are treated as comments.',
       // '-- Here is a CE sentence:',
       'there is a visual thing named \'Andy Murray\'.',
-      'there is a person named \'Raphael Nadal\'.',
       // '-- CE sentences are used for defining instances in the model.',
       // '-- Andy Murray now exists in the model.',
       // '-- CE instances can be extended to other concepts:',
       'the visual thing \'Andy Murray\' is a person.',
       'the visual thing \'Andy Murray\' is a tennis player.',
+      'there is a person named \'Raphael Nadal\'.',
       // '-- Andy Murray is now a visual thing, a person and a tennis player.',
       'there is a food named \'Strawberries\' that\n' +
       '  shows the icon \'Strawberry\'.',
