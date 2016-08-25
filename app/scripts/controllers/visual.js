@@ -34,11 +34,16 @@ angular.module('ceEditorApp')
     var simulation = d3.forceSimulation()
       .force('link', d3.forceLink()
         .id(function(d) { return d.id; }))
-      .force('charge', d3.forceManyBody())
+      .force("x", d3.forceX().strength(0.002))
+      .force("y", d3.forceY().strength(0.002))
+      .force('charge', d3.forceManyBody().strength(-15))
       .force('center', d3.forceCenter(400, 400))
-      .force('collide', d3.forceCollide(nodeRadius + distanceBetweenNodes));
+      .force('collide', d3.forceCollide(nodeRadius + distanceBetweenNodes))
+      .alphaDecay(0.01)
+      .alphaTarget(0.01);
 
     function tick() {
+      // console.log('tick');
       links.selectAll('line')
         .attr('x1', function(d) { return d.source.x; })
         .attr('y1', function(d) { return d.source.y; })
@@ -98,16 +103,32 @@ angular.module('ceEditorApp')
 
       simulation.force('link')
           .links(graph.links);
+
+      simulation.restart();
+      console.log('restart simulation');
     };
 
     visuals.update();
 
     // $timeout(function() {
-    // //   // graph.nodes.splice(1, 1); // remove
-    //   graph.nodes.push({id: 'a', shows: ['person']});
-    //   graph.nodes.push({id: 'b', shows: ['tennis player']});
-    //   graph.links.push({source: 'b', target: 'a'});
-    //   graph.links.push({source: 'b', target: 'Andy Murray'});
+    //   graph.nodes.splice(1, 1); // remove
+    //   update();
+
+    //   $timeout(function() {
+    //     graph.nodes.push({id: 'a', shows: ['person']});
+    //     graph.nodes.push({id: 'b', shows: ['tennis player']});
+    //     update();
+
+    //     $timeout(function() {
+    //       graph.links.push({source: 'b', target: 'a'});
+    //       update();
+
+    //       $timeout(function() {
+    //         graph.links.push({source: 'b', target: 'Andy Murray'});
+    //         update();
+    //       }, 1000);
+    //     }, 1000);
+    //   }, 1000);
     //   update();
     // }, 1000);
   }]);
