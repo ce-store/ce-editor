@@ -16,6 +16,10 @@ angular.module('ceEditorApp')
     var nodeWidth = nodeRadius * 2;
     var link, node;
 
+    var rect = angular.element(document.getElementById('visual'))[0].getBoundingClientRect();
+    var width = rect.width;
+    var height = rect.height;
+
     var updateShapesMap = function() {
       graph = visuals.graph();
       update();
@@ -34,13 +38,11 @@ angular.module('ceEditorApp')
     var simulation = d3.forceSimulation()
       .force('link', d3.forceLink()
         .id(function(d) { return d.id; }))
-      .force("x", d3.forceX().strength(0.002))
-      .force("y", d3.forceY().strength(0.002))
-      .force('charge', d3.forceManyBody().strength(-15))
-      .force('center', d3.forceCenter(400, 400))
+      .force("charge", d3.forceManyBody())
+      .force("x", d3.forceX(width / 2))
+      .force("y", d3.forceY(height / 2))
       .force('collide', d3.forceCollide(nodeRadius + distanceBetweenNodes))
-      .alphaDecay(0.01)
-      .alphaTarget(0.01);
+      .alphaDecay(0.005);
 
     function tick() {
       // console.log('tick');
@@ -53,6 +55,23 @@ angular.module('ceEditorApp')
       nodes.selectAll('image')
         .attr('x', function(d) { return d.x - nodeRadius; })
         .attr('y', function(d) { return d.y - nodeRadius; });
+    }
+
+    function dragstarted() {
+      if (!d3.event.active) {
+        simulation.alphaTarget(0.3).restart();
+      }
+    }
+
+    function dragged(d) {
+      d.x = d3.event.x;
+      d.y = d3.event.y;
+    }
+
+    function dragended() {
+      if (!d3.event.active) {
+        simulation.alphaTarget(0);
+      }
     }
 
     var update = function() {
@@ -75,7 +94,11 @@ angular.module('ceEditorApp')
       var image = node.enter() // ENTER
         .append('image')
           .attr('width', nodeWidth)
-          .attr('height', nodeHeight);
+          .attr('height', nodeHeight)
+        .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended));
 
       image
         .append('title')
@@ -105,7 +128,7 @@ angular.module('ceEditorApp')
           .links(graph.links);
 
       simulation.restart();
-      console.log('restart simulation');
+      // console.log('restart simulation');
     };
 
     visuals.update();

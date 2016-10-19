@@ -72,7 +72,10 @@ angular.module('ceEditorApp')
           $scope.ce += '\n\n';
           $scope.validate();
           $scope.update();
-          deferred.resolve();
+
+          $timeout(function() {
+            deferred.resolve();
+          }, 1000);
         }
       }, 20, text.length));
 
@@ -117,7 +120,8 @@ angular.module('ceEditorApp')
       });
     };
 
+    $scope.update();
     $timeout(function() {
-      // $scope.restart();
+      $scope.restart();
     }, delay);
   }]);
