@@ -52,9 +52,12 @@ angular.module('ceEditorApp')
         .attr('x2', function(d) { return d.target.x; })
         .attr('y2', function(d) { return d.target.y; });
 
-      nodes.selectAll('image')
-        .attr('x', function(d) { return d.x - nodeRadius; })
-        .attr('y', function(d) { return d.y - nodeRadius; });
+      nodes.selectAll('.node')
+        .attr('transform', function(d) {
+          var dx = d.x - nodeRadius;
+          var dy = d.y - nodeRadius;
+          return 'translate(' + dx + ', ' + dy + ')';
+        });
     }
 
     function dragstarted() {
@@ -86,26 +89,35 @@ angular.module('ceEditorApp')
           .attr('stroke-width', 3)
         .merge(link);
 
-      node = nodes.selectAll('image')
+      node = nodes.selectAll('.node')
         .data(graph.nodes, function(d) { return d.id; }); // UPDATE
 
       node.exit().remove(); // EXIT
 
-      var image = node.enter() // ENTER
-        .append('image')
-          .attr('width', nodeWidth)
-          .attr('height', nodeHeight)
+      var nodeEnter = node.enter() // ENTER
+        .append("g")
+          .attr("class", "node")
         .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended));
 
+      var image = nodeEnter.append('image')
+          .attr('width', nodeWidth)
+          .attr('height', nodeHeight);
+
+      nodeEnter.append('text')
+          .style('fill', 'white')
+          .attr("dy", nodeHeight + 15)
+          .text(function(d) { return d.id; });
+
       image
         .append('title')
           .text(function(d) { return d.id; });
 
-      image
+      nodeEnter
         .merge(node) // ENTER + UPDATE
+        .selectAll('image')
           .attr('xlink:href', function(d) {
             if (d.shows.indexOf('famous tennis player') > -1) {
               return 'images/famous_tennis_player.png';
@@ -136,26 +148,4 @@ angular.module('ceEditorApp')
     };
 
     visuals.update();
-
-    // $timeout(function() {
-    //   graph.nodes.splice(1, 1); // remove
-    //   update();
-
-    //   $timeout(function() {
-    //     graph.nodes.push({id: 'a', shows: ['person']});
-    //     graph.nodes.push({id: 'b', shows: ['tennis player']});
-    //     update();
-
-    //     $timeout(function() {
-    //       graph.links.push({source: 'b', target: 'a'});
-    //       update();
-
-    //       $timeout(function() {
-    //         graph.links.push({source: 'b', target: 'Andy Murray'});
-    //         update();
-    //       }, 1000);
-    //     }, 1000);
-    //   }, 1000);
-    //   update();
-    // }, 1000);
   }]);
