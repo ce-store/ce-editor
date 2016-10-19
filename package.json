@@ -5,9 +5,7 @@
     "http-server": "^0.9.0"
   },
   "scripts": {
-    "prestart": "npm install",
-    "start": "node ./app.js",
-    "pretest": "npm install"
+    "start": "node ./app.js"
   },
   "dependencies": {
     "cfenv": "1.0.x",

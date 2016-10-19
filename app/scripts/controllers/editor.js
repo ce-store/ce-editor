@@ -106,9 +106,16 @@ angular.module('ceEditorApp')
     $scope.update = function() {
       var loadCe = 'perform load sentences from url "/ce-store/ce/editor/cmd/load.cecmd".';
       ce.save(loadCe + ' ' + $scope.ce).then(function() {
-        // console.info('loaded CE');
         visuals.update();
       });
+    };
+
+    $scope.clear = function() {
+      $scope.ce = '';
+      intervals.forEach(function(interval) {
+        $interval.cancel(interval);
+      });
+      $scope.update();
     };
 
     $scope.skip = function() {
