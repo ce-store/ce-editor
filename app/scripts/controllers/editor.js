@@ -19,22 +19,23 @@ angular.module('ceEditorApp')
     $scope.ce = '';
 
     var tutorialText = [
-      // '-- Welcome to the Controlled English (CE) editor.',
-      // '-- Controlled English allows you to describe a model using English sentences.',
-      // '-- Sentences beginning with a double dash are treated as comments.',
-      // '-- Here is a CE sentence:',
+      '-- Welcome to the Controlled English (CE) editor.',
+      '-- Controlled English allows you to describe a model using English sentences.',
+      '-- Sentences beginning with a double dash are treated as comments.',
+      '-- Here is a CE sentence:',
       'there is a visual thing named \'Andy Murray\'.',
-      // '-- CE sentences are used for defining instances in the model.',
-      // '-- Andy Murray now exists in the model.',
-      // '-- CE instances can be extended to other concepts:',
+      '-- CE sentences are used for defining instances in the model.',
+      '-- Andy Murray now exists in the model.',
+      '-- CE instances can be extended to other concepts:',
       'the visual thing \'Andy Murray\' is a person.',
       'the visual thing \'Andy Murray\' is a tennis player.',
-      'there is a person named \'Raphael Nadal\'.',
-      // '-- Andy Murray is now a visual thing, a person and a tennis player.',
+      '-- Andy Murray is now a visual thing, a person and a tennis player.',
+      'there is a tennis player named \'Raphael Nadal\'.',
       'there is a food named \'Strawberries\' that\n' +
       '  shows the icon \'Strawberry\'.',
-      // '-- CE instances can be assigned properties:',
-      'the person \'Andy Murray\' likes the food \'Strawberries\'.'
+      '-- CE instances can be assigned properties:',
+      'the person \'Andy Murray\' likes the food \'Strawberries\'.',
+      'the tennis player \'Andy Murray\' plays with the tennis player \'Raphael Nadal\'.'
     ];
 
     $scope.validate = function() {

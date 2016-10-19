@@ -127,6 +127,10 @@ angular.module('ceEditorApp')
       simulation.force('link')
           .links(graph.links);
 
+      var alpha = simulation.alpha();
+      if (alpha < 0.2) {
+        simulation.alpha(alpha + 0.1);
+      }
       simulation.restart();
       // console.log('restart simulation');
     };
