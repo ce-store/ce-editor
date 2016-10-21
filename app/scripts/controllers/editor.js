@@ -12,7 +12,7 @@ angular.module('ceEditorApp')
     var validText = 'Valid CE';
     var invalidText = 'Invalid CE';
     var validationFailed = 'Validation failed';
-    var delay = 1000;
+    var delay = 100;
     var intervals = [];
 
     // $scope.html = '';
@@ -22,21 +22,21 @@ angular.module('ceEditorApp')
       '-- Welcome to the Controlled English (CE) editor.',
       '-- Controlled English allows you to describe a model using English sentences. Any line beginning with a double dash is treated as a comment.',
       '-- Here is a CE sentence:',
-      'there is a visual thing named \'Andy Murray\'.',
+      'there is a thing named \'Andy Murray\'.',
       ' ',
       '-- CE sentences are used for defining instances in the model.',
       '-- As you can see on the right, Andy Murray now exists in the model.  This tutorial will display any instance that is a visual thing.',
       '-- CE instances can be extended to other concepts:',
-      'the visual thing \'Andy Murray\' is a person.',
-      'the visual thing \'Andy Murray\' is a tennis player.',
+      'the thing \'Andy Murray\' is a person.',
+      'the thing \'Andy Murray\' is a tennis player.',
       ' ',
       '-- Andy Murray is now a visual thing, a person and a tennis player.',
       '-- Lets add some more instances:',
       'there is a tennis player named \'Raphael Nadal\'.',
       'there is a food named \'Strawberries\'.',
       ' ',
-      '-- Currently, the model doesn\'t know how to render the type food, but we can define it for this instance by adding a property:',
-      'the food \'Strawberries\' shows the icon \'Strawberry\'.',
+      // '-- Currently, the model doesn\'t know how to render the type food, but we can define it for this instance by adding a property:',
+      // 'the food \'Strawberries\' shows the icon \'Strawberry\'.',
       ' ',
       '-- CE instances can relate to each other using their properties:',
       'the person \'Andy Murray\' likes the food \'Strawberries\'.',

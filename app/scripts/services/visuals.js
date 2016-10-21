@@ -9,128 +9,176 @@
  */
 angular.module('ceEditorApp')
   .service('visuals', ['ce', function (ce) {
-    var visualThings, shapes;
     var graph = {
       nodes: [],
       links: []
     };
+    var things;
     var currentThings = {};
+    var renderingMap = {};
+
+    var metaModel = false;
+
+    var showMetaModel = function() {
+      metaModel = true;
+    };
+
+    var hideMetaModel = function() {
+      metaModel = false;
+    };
 
     var getGraph = function() {
-      for (var i = 0; i < graph.nodes.length; ++i) {
-        var node = graph.nodes[i];
+      graph.nodes.forEach(function(node) {
         currentThings[node.id] = {};
 
         for (var property in node) {
-          if (property !== 'shows') {
-            var values = node[property];
-            if (Array.isArray(values)) {
-              // console.log('getGraph: ' + property);
-              currentThings[node.id][property] = values;
-            }
+          var values = node[property];
+          if (Array.isArray(values)) {
+            currentThings[node.id][property] = values;
           }
         }
-      }
+      });
 
       return graph;
     };
 
-    var update = function() {
-      ce.getVisualThings().then(function(response) {
-        visualThings = response.data;
+    var addLinks = function(newLinks, thing, property) {
+      newLinks.forEach(function(link) {
+        graph.links.push({source: thing._id, target: link, name: property});
+      });
+    };
 
-        ce.getShapes().then(function(response) {
-          shapes = response.data;
+    var removeLinks = function(oldLinks) {
+      oldLinks.forEach(function(obj) {
+        var l = graph.links.length;
+        while (l--) {
+          var link = graph.links[l];
+
+          if (link.source.id === obj || link.target.id === obj) {
+            graph.links.splice(l, 1);
+          }
+        }
+      });
+    };
+
+    // Update visuals
+    var update = function() {
+      // Get all things from model
+      ce.getThings().then(function(response) {
+        var allThings = response.data;
+        things = [];
+
+        // if (metaModel) {
+          allThings.forEach(function(thing) {
+            if ((thing._concept.indexOf('concept') < 0) &&
+                (thing._concept.indexOf('conceptual model') < 0)) {
+              things.push(thing);
+            }
+
+            if (thing['is rendered by']) {
+              renderingMap[thing._id] = thing['is rendered by'];
+            }
+          });
+        // }
+
+        // Get all concepts from model for calculating parents
+        ce.getConcepts().then(function(response) {
+          var conceptParentMap = {};
+
+          response.data.forEach(function(concept) {
+            conceptParentMap[concept._id] = concept.all_parent_names;
+          });
+
           var newThings = {};
 
-          var addLink = function(link) {
-            console.log('add link ' + thing._id + '-' + link);
-            graph.links.push({source: thing._id, target: link});
-          };
+          // For each thing, find image and links
+          things.forEach(function(thing) {
+            var childConcepts = [];
 
-          var removeLink = function(obj) {
-            var l = graph.links.length;
-            while (l--) {
-              var link = graph.links[l];
-
-              if (link.source.id === obj || link.target.id === obj) {
-                console.log('remove link ' + link.source.id + '-' + link.target.id);
-                graph.links.splice(l, 1);
-              }
-            }
-          };
-
-          for (var i = 0; i < visualThings.length; ++i) {
-            var thing = visualThings[i];
-            var renderedBy = thing.property_values['is rendered by'];
-            var shows = thing.property_values.shows;
-
-            if (renderedBy) {
-              if (renderedBy.indexOf('Square') > -1) {
-                // do something
-              } else if (renderedBy.indexOf('Circle') > -1) {
-                var showsList = [];
-                if (shows) {
-                  for (var j = 0; j < shows.length; ++j) {
-                    var show = shows[j].toLowerCase();
-                    showsList.push(show);
-                  }
-                }
-
-                newThings[thing._id] = showsList;
-
-                if (!currentThings[thing._id]) {
-                  console.log('add node ' + thing._id);
-                  var node = {
-                    id: thing._id,
-                    shows: showsList
-                  };
-
-                  currentThings[thing._id] = {};
-
-                  // add links
-                  for (var property in thing.property_values) {
-                    if (property !== 'is rendered by' && property !== 'shows') {
-                      var values = thing.property_values[property];
-                      node[property] = values;
-                      values.forEach(addLink);
-                      // console.log('No currentThing: ' + property);
-                      currentThings[thing._id][property] = values;
-                    }
-                  }
-
-                  graph.nodes.push(node);
+            // Find deepest child to use as image
+            if (thing._concept.length > 0) {
+              thing._concept.forEach(function(concept) {
+                if (childConcepts.length === 0) {
+                  childConcepts.push(concept);
                 } else {
-                  var propertiesChecked = ['is rendered by', 'shows'];
-                  for (var property in thing.property_values) {
-                    if (property !== 'is rendered by' && property !== 'shows') {
-                      var values = thing.property_values[property];
-                      values = values ? values : [];
-                      // console.log('currentThing: ' + property);
-                      propertiesChecked.push(property);
-                      currentThings[thing._id][property] = values;
-
-                      var oldLinks = values;
-                      var newLinks = values;
-
-                      oldLinks.forEach(removeLink);
-                      newLinks.forEach(addLink);
+                  var newChildConcepts = childConcepts.slice();
+                  // TODO: If this child doesn't have an image, use parent
+                  childConcepts.forEach(function(childConcept, i) {
+                    if (conceptParentMap[concept] &&
+                        conceptParentMap[concept].indexOf(childConcept) > -1) {
+                      newChildConcepts.splice(i, 1, concept);
+                    } else if (conceptParentMap[childConcept] &&
+                        conceptParentMap[concept].indexOf(concept) < 0) {
+                      newChildConcepts.push(concept);
                     }
-                  }
+                  });
+                  childConcepts = newChildConcepts;
+                }
+              });
+            } else {
+              childConcepts.push('thing');
+            }
 
-                  // Check for removed links of non-existant properties
-                  for (var property in currentThings[thing._id]) {
-                    if (propertiesChecked.indexOf(property) < 0) {
-                      var oldLinks = currentThings[thing._id][property];
-                      // console.log('remove property: ' + property);
-                      oldLinks.forEach(removeLink);
-                      delete currentThings[thing._id][property];
-                    }
-                  }
+            var images = [];
+
+            // Get images for concepts
+            childConcepts.forEach(function(concept) {
+              var image = renderingMap[concept];
+              if (!image) {
+                image = renderingMap.thing;
+              }
+              images.push(image);
+            });
+
+            newThings[thing._id] = images;
+            var property, values;
+
+            // If this is a new node, add it
+            if (!currentThings[thing._id]) {
+              var node = {
+                id: thing._id,
+                shows: images
+              };
+
+              currentThings[thing._id] = {};
+
+              // Add links
+              for (property in thing) {
+                if (thing.hasOwnProperty[property] && property.charAt(0) !== '_') {
+                  values = thing[property];
+                  values = Array.isArray(values) ? values : [values];
+                  node[property] = values;
+                  addLinks(values, thing, property);
+                  currentThings[thing._id][property] = values;
+                }
+              }
+
+              graph.nodes.push(node);
+            // If this node already exists, update it
+            } else {
+              var propertiesChecked = [];
+              for (property in thing) {
+                if (thing.hasOwnProperty(property) && property.charAt(0) !== '_') {
+                  values = thing[property];
+                  values = Array.isArray(values) ? values : [values];
+                  propertiesChecked.push(property);
+                  currentThings[thing._id][property] = values;
+
+                  removeLinks(values);
+                  addLinks(values, thing, property);
+                }
+              }
+
+              // Check for removed links of non-existant properties
+              for (property in currentThings[thing._id]) {
+                if (propertiesChecked.indexOf(property) < 0) {
+                  var redundantLinks = currentThings[thing._id][property];
+                  removeLinks(redundantLinks);
+                  delete currentThings[thing._id][property];
                 }
               }
             }
-          }
+          });
 
           var n = graph.nodes.length;
           while (n--) {
@@ -141,7 +189,6 @@ angular.module('ceEditorApp')
               node.shows = newThings[node.id];
             } else {
               // remove node
-              console.log('remove node ' + node.id);
               graph.nodes.splice(n, 1);
               delete currentThings[node.id];
 
@@ -151,7 +198,6 @@ angular.module('ceEditorApp')
                 var link = graph.links[l];
 
                 if (link.source.id === node.id || link.target.id === node.id) {
-                  console.log('remove link ' + link.source.id + '-' + link.target.id);
                   graph.links.splice(l, 1);
                 }
               }
@@ -176,6 +222,8 @@ angular.module('ceEditorApp')
     };
 
     return {
+      showMetaModel: showMetaModel,
+      hideMetaModel: hideMetaModel,
       graph: getGraph,
       update: update,
       registerObserverCallback: registerObserverCallback

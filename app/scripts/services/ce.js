@@ -9,29 +9,21 @@
  */
 angular.module('ceEditorApp')
   .service('ce', ['$http', 'ceStore', function ($http, ceStore) {
-    var visualThingsUrl = ceStore + '/concepts/visual thing/instances';
-    var iconsUrl = ceStore + '/concepts/icon/instances';
-    var shapesUrl = ceStore + '/concepts/shape/instances';
+    var thingsUrl = ceStore + '/concepts/thing/instances?style=normalised';
+    var conceptsUrl = ceStore + '/concepts?style=summary';
     var saveUrl = ceStore + '/sources/generalCeForm?runRules=true&action=save';
 
-    var getVisualThings = function() {
+    var getThings = function() {
       return $http({
         method: 'GET',
-        url: visualThingsUrl
+        url: thingsUrl
       });
     };
 
-    var getIcons = function() {
+    var getConcepts = function() {
       return $http({
         method: 'GET',
-        url: iconsUrl
-      });
-    };
-
-    var getShapes = function() {
-      return $http({
-        method: 'GET',
-        url: shapesUrl
+        url: conceptsUrl
       });
     };
 
@@ -44,9 +36,8 @@ angular.module('ceEditorApp')
     };
 
     return {
-      getVisualThings: getVisualThings,
-      getIcons: getIcons,
-      getShapes: getShapes,
+      getThings: getThings,
+      getConcepts: getConcepts,
       save: saveCe
     };
   }]);
