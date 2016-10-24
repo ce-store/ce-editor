@@ -8,7 +8,7 @@
  * Controller of the ceEditorApp
  */
 angular.module('ceEditorApp')
-  .controller('VisualCtrl', ['$scope', '$window', '$timeout', 'ce', 'visuals', function ($scope, $window, $timeout, ce, visuals) {
+  .controller('VisualCtrl', ['$window', 'visuals', function ($window, visuals) {
     var graph = visuals.graph();
     var nodeRadius = 40;
     var distanceBetweenNodes = nodeRadius;

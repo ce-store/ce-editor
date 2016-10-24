@@ -8,36 +8,49 @@
  * Service in the ceEditorApp.
  */
 angular.module('ceEditorApp')
-  .service('ce', ['$http', 'ceStore', function ($http, ceStore) {
-    var thingsUrl = ceStore + '/concepts/thing/instances?style=normalised';
-    var conceptsUrl = ceStore + '/concepts?style=summary';
-    var saveUrl = ceStore + '/sources/generalCeForm?runRules=true&action=save';
-
+  .service('ce', ['$http', function ($http) {
     var getThings = function() {
       return $http({
         method: 'GET',
-        url: thingsUrl
+        url: 'api/things'
       });
     };
 
     var getConcepts = function() {
       return $http({
         method: 'GET',
-        url: conceptsUrl
+        url: 'api/concepts'
+      });
+    };
+
+    var getCe = function() {
+      return $http({
+        method: 'GET',
+        url: 'api'
       });
     };
 
     var saveCe = function(ce) {
       return $http({
         method: 'POST',
-        url: saveUrl,
-        data: ce
+        url: 'api',
+        data: {ce: ce}
+      });
+    };
+
+    var validateCe = function(ce) {
+      return $http({
+        method: 'POST',
+        url: 'api/validate',
+        data: {ce: ce}
       });
     };
 
     return {
       getThings: getThings,
       getConcepts: getConcepts,
-      save: saveCe
+      get: getCe,
+      save: saveCe,
+      validate: validateCe
     };
   }]);
