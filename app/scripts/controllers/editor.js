@@ -12,7 +12,7 @@ angular.module('ceEditorApp')
     var validText = 'Valid CE';
     var invalidText = 'Invalid CE';
     var validationFailed = 'Validation failed';
-    var delay = 100;
+    var delay = 1000;
     var intervals = [];
 
     // $scope.html = '';
@@ -58,7 +58,7 @@ angular.module('ceEditorApp')
             $scope.valid = true;
             $scope.validationText = validText;
           }
-        }, function errorCallback(response) {
+        }, function errorCallback() {
           $scope.validationText = validationFailed;
         });
     };
@@ -139,6 +139,7 @@ angular.module('ceEditorApp')
         .then(function(response) {
           var data = response.data.split(loadCe);
           $scope.ce = data[data.length - 1];
+          visuals.update();
           if ($scope.ce.length === 0) {
             $scope.restart();
           }

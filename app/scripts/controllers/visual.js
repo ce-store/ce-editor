@@ -221,6 +221,4 @@ angular.module('ceEditorApp')
       }
       simulation.restart();
     };
-
-    visuals.update();
   }]);

@@ -144,7 +144,7 @@ angular.module('ceEditorApp')
 
               // Add links
               for (property in thing) {
-                if (thing.hasOwnProperty[property] && property.charAt(0) !== '_') {
+                if (property.charAt(0) !== '_') {
                   values = thing[property];
                   values = Array.isArray(values) ? values : [values];
                   node[property] = values;
@@ -158,7 +158,7 @@ angular.module('ceEditorApp')
             } else {
               var propertiesChecked = [];
               for (property in thing) {
-                if (thing.hasOwnProperty(property) && property.charAt(0) !== '_') {
+                if (property.charAt(0) !== '_') {
                   values = thing[property];
                   values = Array.isArray(values) ? values : [values];
                   propertiesChecked.push(property);
