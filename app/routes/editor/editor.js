@@ -14,8 +14,8 @@ angular.module('ceEditorApp')
     var validationFailed = 'Validation failed';
     var delay = 1000;
     var intervals = [];
-    var writing = false;
 
+    $scope.writing = false;
     $scope.ce = '';
 
     var loadCe = 'perform load sentences from url "/ce-store/ce/editor/cmd/load.cecmd". ';
@@ -66,7 +66,7 @@ angular.module('ceEditorApp')
       var deferred = $q.defer();
       var letter = 0;
 
-      if (writing) {
+      if ($scope.writing) {
         intervals.push($interval(function() {
           $scope.ce += text.slice(letter++, letter);
 
@@ -108,7 +108,7 @@ angular.module('ceEditorApp')
     };
 
     $scope.clear = function() {
-      writing = false;
+      $scope.writing = false;
       $scope.ce = '';
       intervals.forEach(function(interval) {
         $interval.cancel(interval);
@@ -117,7 +117,7 @@ angular.module('ceEditorApp')
     };
 
     $scope.skip = function() {
-      writing = false;
+      $scope.writing = false;
       $scope.ce = tutorialText.join('\n\n');
       intervals.forEach(function(interval) {
         $interval.cancel(interval);
@@ -127,14 +127,14 @@ angular.module('ceEditorApp')
     };
 
     $scope.restart = function() {
-      writing = true;
+      $scope.writing = true;
       $scope.ce = '';
       intervals.forEach(function(interval) {
         $interval.cancel(interval);
       });
       intervals = [];
       doAsyncSeries(tutorialText).then(function() {
-        writing = false;
+        $scope.writing = false;
       });
     };
 
