@@ -16,12 +16,12 @@ textarea {
 
 @font-face {
   font-family: GistUpright;
-  src: url(../fonts/GistUpright.otf);
+  src: url(../assets/fonts/GistUpright.otf);
 }
 
 @font-face {
   font-family: Anton;
-  src: url(../fonts/Anton.ttf);
+  src: url(../assets/fonts/Anton.ttf);
 }
 
 .site-container {
@@ -42,7 +42,7 @@ textarea {
 .edit-area {
   margin: 10px 20px 20px 20px;
   width: calc(100% - 40px);
-  height: calc(100% - 167px);
+  height: calc(100% - 240px);
   background: none;
   border: none;
 }
@@ -51,14 +51,12 @@ textarea {
   outline: none;
 }
 
-.edit-details {
-  height: 50px;
-  padding: 0 10px;
-}
-
 .validation {
+  display: block;
+  height: 20px;
+  width: 100%;
   padding: 5px 10px;
-  float: right;
+  text-align: right;
 }
 
 .text-success {
@@ -67,6 +65,47 @@ textarea {
 
 .text-failure {
   color: #FF0000;
+}
+
+/* Footer */
+
+.footer {
+  height: 200px;
+}
+
+.edit-buttons {
+  display: block;
+  height: 40px;
+  width: 100%;
+  padding: 0 10px;
+  float: right;
+}
+
+.store {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.store input {
+  width: calc(100% - 192px);
+  border: 1px solid silver;
+  border-radius: 5px;
+  background: #5f5e5e;
+  color: white;
+  outline-color: #34a5da;
+}
+
+.store .glyphicon {
+  font-size: 1.25em;
+}
+
+.store .glyphicon:hover {
+  cursor: pointer;
+  color: #34a5da;
 }
 
 /* TextAngular */
@@ -86,7 +125,7 @@ textarea {
 .visual {
   width: 60%;
   height: 100%;
-  background-image: url("../images/stripes.png");
+  background-image: url("../assets/images/stripes.png");
 }
 
 .visual-svg {

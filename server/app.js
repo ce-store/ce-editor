@@ -21,13 +21,12 @@ app.use(session({
   })
 }));
 
-app.use('/app', express.static(path.join(__dirname, '../app')));
+app.use('/', express.static(path.join(__dirname, '../app')));
 app.use('/bower_components', express.static(path.join(__dirname, '../app', 'bower_components')));
-app.use('/fonts', express.static(path.join(__dirname, '../app', 'fonts')));
-app.use('/images', express.static(path.join(__dirname, '../app', 'images')));
-app.use('/scripts', express.static(path.join(__dirname, '../app', 'scripts')));
+app.use('/assets', express.static(path.join(__dirname, '../app', 'assets')));
+app.use('/routes', express.static(path.join(__dirname, '../app', 'routes')));
+app.use('/services', express.static(path.join(__dirname, '../app', 'services')));
 app.use('/styles', express.static(path.join(__dirname, '../app', 'styles')));
-app.use('/views', express.static(path.join(__dirname, '../app', 'views')));
 
 app.use('/api', require('./api'));
 

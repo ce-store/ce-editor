@@ -1,0 +1,23 @@
+<h1>CE EDITOR</h1>
+
+<textarea id="editor" class="edit-area" ng-model="ce" ng-change="validate()"></textarea>
+<!-- <div text-angular ng-model="html" class="edit-area"></div> -->
+
+<div class="validation">
+  <span ng-class="valid ? 'text-success' : 'text-failure'">validationText</span>
+</div>
+<!-- <span class="validation" ng-class="valid ? 'text-success' : 'text-failure'">{{ validationText }}</span> -->
+
+<div class="footer">
+  <div class="edit-buttons">
+    <button class="btn" ng-click="update()" ng-disabled="!valid">Update</button>
+    <button class="btn" ng-click="clear()">Clear</button>
+    <!-- <button class="btn" ng-click="skip()">Skip Tutorial</button> -->
+    <!-- <button class="btn" ng-click="restart()">Restart</button> -->
+    <button class="btn" ng-click="export()">Export</button>
+  </div>
+  <div class="store">
+    <span>Connected to CE-Store</span> <input></input> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+  </div>
+</div>
+

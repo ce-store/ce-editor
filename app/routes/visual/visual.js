@@ -199,7 +199,7 @@ angular.module('ceEditorApp')
             if (!image) {
               image = 'circle.png';
             }
-            return 'images/' + d.shows[0];
+            return 'assets/images/' + d.shows[0];
           });
 
       nodeMerge.selectAll('rect')

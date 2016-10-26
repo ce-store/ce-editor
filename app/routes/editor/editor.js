@@ -14,8 +14,8 @@ angular.module('ceEditorApp')
     var validationFailed = 'Validation failed';
     var delay = 1000;
     var intervals = [];
+    var writing = false;
 
-    // $scope.html = '';
     $scope.ce = '';
 
     var loadCe = 'perform load sentences from url "/ce-store/ce/editor/cmd/load.cecmd". ';
@@ -47,7 +47,6 @@ angular.module('ceEditorApp')
       '-- You can find out more here: https://github.com/ce-store/ce-store/wiki/cheatsheet'
     ];
 
-
     $scope.validate = function() {
       ce.validate($scope.ce)
         .then(function successCallback(response) {
@@ -67,25 +66,26 @@ angular.module('ceEditorApp')
       var deferred = $q.defer();
       var letter = 0;
 
-      // $scope.html += '<p>';
-      intervals.push($interval(function() {
-        // $scope.html += text.slice(letter, letter + 1);
-        $scope.ce += text.slice(letter++, letter);
+      if (writing) {
+        intervals.push($interval(function() {
+          $scope.ce += text.slice(letter++, letter);
 
-        var editor = document.getElementById('editor');
-        editor.scrollTop = editor.scrollHeight;
+          var editor = document.getElementById('editor');
+          editor.scrollTop = editor.scrollHeight;
 
-        if (letter === text.length) {
-          // $scope.html += '</p>';
-          $scope.ce += '\n\n';
-          $scope.validate();
-          $scope.update();
+          if (letter === text.length) {
+            $scope.ce += '\n\n';
+            $scope.validate();
+            $scope.update();
 
-          $timeout(function() {
-            deferred.resolve();
-          }, 1000);
-        }
-      }, 20, text.length));
+            $timeout(function() {
+              deferred.resolve();
+            }, 1000);
+          }
+        }, 20, text.length));
+      } else {
+        deferred.reject();
+      }
 
       return deferred.promise;
     };
@@ -93,6 +93,7 @@ angular.module('ceEditorApp')
     var doAsyncSeries = function(arr) {
       return arr.reduce(function (promise, text) {
         return promise.then(function() {
+          console.log('write sentence');
           return writeSentence(text);
         });
       }, $q.when());
@@ -107,6 +108,7 @@ angular.module('ceEditorApp')
     };
 
     $scope.clear = function() {
+      writing = false;
       $scope.ce = '';
       intervals.forEach(function(interval) {
         $interval.cancel(interval);
@@ -115,6 +117,7 @@ angular.module('ceEditorApp')
     };
 
     $scope.skip = function() {
+      writing = false;
       $scope.ce = tutorialText.join('\n\n');
       intervals.forEach(function(interval) {
         $interval.cancel(interval);
@@ -124,25 +127,26 @@ angular.module('ceEditorApp')
     };
 
     $scope.restart = function() {
+      writing = true;
       $scope.ce = '';
       intervals.forEach(function(interval) {
         $interval.cancel(interval);
       });
       intervals = [];
       doAsyncSeries(tutorialText).then(function() {
-        console.log('done');
+        writing = false;
       });
     };
 
-    $timeout(function() {
-      ce.get()
-        .then(function(response) {
-          var data = response.data.split(loadCe);
-          $scope.ce = data[data.length - 1];
-          visuals.update();
-          if ($scope.ce.length === 0) {
-            $scope.restart();
-          }
-        });
-    }, delay);
+    // $timeout(function() {
+    //   ce.get()
+    //     .then(function(response) {
+    //       var data = response.data.split(loadCe);
+    //       $scope.ce = data[data.length - 1];
+    //       visuals.update();
+    //       if ($scope.ce.length === 0) {
+    //         $scope.restart();
+    //       }
+    //     });
+    // }, delay);
   }]);

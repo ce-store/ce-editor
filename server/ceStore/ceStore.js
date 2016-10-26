@@ -1,7 +1,7 @@
 var request = require('request');
 
-// var ceStore = 'http://localhost:8080/ce-store/stores/';
-var ceStore = 'http://editor-store.mybluemix.net/ce-store/stores/';
+var ceStore = 'http://localhost:8080/ce-store/stores/';
+// var ceStore = 'http://editor-store.mybluemix.net/ce-store/stores/';
 
 function getStore(id, cb) {
   'use strict';

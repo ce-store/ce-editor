@@ -21,11 +21,11 @@ angular.module('ceEditorApp', [
       url: '',
       views: {
         'editor': {
-          templateUrl: 'views/editor.html',
+          templateUrl: 'routes/editor/editor.html',
           controller: 'EditorCtrl'
         },
         'visual': {
-          templateUrl: 'views/visual.html',
+          templateUrl: 'routes/visual/visual.html',
           controller: 'VisualCtrl'
         }
       }
