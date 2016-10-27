@@ -1,12 +1,10 @@
 <h1>CE EDITOR</h1>
 
 <textarea id="editor" class="edit-area" ng-model="ce" ng-change="validate()"></textarea>
-<!-- <div text-angular ng-model="html" class="edit-area"></div> -->
 
 <div class="validation">
-  <span ng-class="valid ? 'text-success' : 'text-failure'">validationText</span>
+  <span class="validation" ng-class="valid ? 'text-success' : 'text-failure'">{{ validationText }}</span>
 </div>
-<!-- <span class="validation" ng-class="valid ? 'text-success' : 'text-failure'">{{ validationText }}</span> -->
 
 <div class="footer">
   <div class="buttons">
@@ -24,7 +22,9 @@
     </div>
   </div>
   <div class="store">
-    <span>Connected to CE-Store</span> <input></input> <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+    <span>Connected to CE-Store</span>
+    <input ng-model="ceStore" disabled></input>
+    <span class="glyphicon glyphicon-cog" ng-click="openSettings()" aria-hidden="true"></span>
   </div>
 </div>
 

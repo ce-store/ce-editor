@@ -70,7 +70,7 @@ textarea {
 /* Footer */
 
 .footer {
-  height: 200px;
+  height: 96px;
   background: #565656;
   padding-top: 10px;
 }
@@ -137,6 +137,15 @@ textarea {
   color: #34a5da;
 }
 
+.store input {
+  padding: 2px 5px 0;
+}
+
+.store input[disabled] {
+  color: #a9a9a9;
+  cursor: not-allowed;
+}
+
 /* TextAngular */
 
 .ta-toolbar {
@@ -170,4 +179,31 @@ textarea {
 .nodes circle {
   stroke: #fff;
   stroke-width: 1.5px;
+}
+
+/* Settings Modal */
+
+.modal-content {
+  background: #444444;
+  color: white;
+  border-width: 0;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-body {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 60px;
+}
+
+.modal-footer {
+  background: #565656;
+  border-top: none;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
 }

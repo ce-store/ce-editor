@@ -1,0 +1,5 @@
+{
+  "store": "http://localhost:8080/ce-store/",
+  "lang": "java",
+  "edit": false
+}

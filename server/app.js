@@ -28,7 +28,8 @@ app.use('/routes', express.static(path.join(__dirname, '../app', 'routes')));
 app.use('/services', express.static(path.join(__dirname, '../app', 'services')));
 app.use('/styles', express.static(path.join(__dirname, '../app', 'styles')));
 
-app.use('/api', require('./api'));
+app.use('/api', require('./api/ce'));
+app.use('/config', require('./api/config'));
 
 app.all('/*', function (req, res) {
   'use strict';

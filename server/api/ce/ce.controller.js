@@ -1,4 +1,4 @@
-var ceStore = require('../ceStore/ceStore');
+var ceStore = require('../../ceStore/ceStore');
 
 function getThings(req, res) {
   'use strict';

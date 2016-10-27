@@ -10,6 +10,7 @@
  */
 angular.module('ceEditorApp', [
   'ui.router',
+  'ui.bootstrap',
   'textAngular'
 ])
 

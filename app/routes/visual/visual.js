@@ -1,14 +1,7 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name ceEditorApp.controller:VisualCtrl
- * @description
- * # VisualCtrl
- * Controller of the ceEditorApp
- */
 angular.module('ceEditorApp')
-  .controller('VisualCtrl', ['$window', 'visuals', function ($window, visuals) {
+  .controller('VisualCtrl', function ($window, visuals) {
     var graph = visuals.graph();
     var nodeRadius = 40;
     var distanceBetweenNodes = nodeRadius;
@@ -221,4 +214,4 @@ angular.module('ceEditorApp')
       }
       simulation.restart();
     };
-  }]);
+  });

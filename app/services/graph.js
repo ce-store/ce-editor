@@ -1,12 +1,5 @@
 'use strict';
 
-/**
- * @ngdoc service
- * @name ceEditorApp.visuals
- * @description
- * # visuals
- * Service in the ceEditorApp.
- */
 angular.module('ceEditorApp')
   .service('visuals', ['ce', function (ce) {
     var graph = {

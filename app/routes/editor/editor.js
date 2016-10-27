@@ -1,14 +1,7 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name ceEditorApp.controller:EditorCtrl
- * @description
- * # EditorCtrl
- * Controller of the ceEditorApp
- */
 angular.module('ceEditorApp')
-  .controller('EditorCtrl', ['$scope', '$http', '$timeout', '$interval', '$q', 'ce', 'visuals', function ($scope, $http, $timeout, $interval, $q, ce, visuals) {
+  .controller('EditorCtrl', function ($scope, $http, $timeout, $interval, $q, $uibModal, ce, visuals, config) {
     var validText = 'Valid CE';
     var invalidText = 'Invalid CE';
     var validationFailed = 'Validation failed';
@@ -17,6 +10,10 @@ angular.module('ceEditorApp')
 
     $scope.writing = false;
     $scope.ce = '';
+    config.get().then(function(cfg) {
+      $scope.ceStore = cfg.data.store;
+    });
+    $scope.validationText = 'Not connected';
 
     var loadCe = 'perform load sentences from url "/ce-store/ce/editor/cmd/load.cecmd". ';
 
@@ -138,6 +135,13 @@ angular.module('ceEditorApp')
       });
     };
 
+    $scope.openSettings = function() {
+      $uibModal.open({
+        templateUrl: '/routes/settings/settings.html',
+        controller: 'SettingsCtrl',
+      });
+    };
+
     // $timeout(function() {
     //   ce.get()
     //     .then(function(response) {
@@ -149,4 +153,4 @@ angular.module('ceEditorApp')
     //       }
     //     });
     // }, delay);
-  }]);
+  });

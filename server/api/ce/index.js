@@ -1,5 +1,5 @@
 var express = require('express');
-var controller = require('./api.controller');
+var controller = require('./ce.controller');
 var bodyParser = require('body-parser');
 
 var router = express.Router();
