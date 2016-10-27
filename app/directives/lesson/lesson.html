@@ -1,14 +1,13 @@
-<div uib-accordion-group class="lesson-panel" is-open="open">
+<div uib-accordion-group class="lesson-panel" is-open="lesson.open">
   <uib-accordion-heading>
     <h4>
-      <span class="lesson-name">{{name}}</span>
-      <span ng-show="open" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-      <span ng-show="!open" class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span>
+      <span class="lesson-name">{{lesson.name}}</span>
+      <span ng-show="lesson.open" class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+      <span ng-show="!lesson.open" class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span>
     </h4>
   </uib-accordion-heading>
 
-  <text-angular ng-if="desc" ng-model="desc" class="lesson-desc" ta-disabled="true"></text-angular>
-  <!-- <hr> -->
-  <textarea elastic class="lesson-area" ng-model="ce" ng-change="checkLesson()" taDisabled></textarea>
-  <button class="btn next-btn" ng-show="desc" ng-disabled="!complete">Next</button>
+  <text-angular ng-if="lesson.desc" ng-model="lesson.desc" class="lesson-desc" ta-disabled="true"></text-angular>
+  <textarea elastic class="lesson-area" ng-model="lesson.ce" ng-change="checkCompletion()" taDisabled></textarea>
+  <button class="btn next-btn" ng-show="lesson.desc" ng-disabled="!complete" ng-click="lesson.next()">Next</button>
 </div>

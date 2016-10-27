@@ -3,7 +3,7 @@
 <!-- <textarea id="editor" class="edit-area" ng-model="ce" ng-change="validate()"></textarea> -->
 <div id="editor" class="edit-area">
   <uib-accordion close-others="false">
-    <lesson ng-repeat="lesson in lessons" name="lesson.name" desc="lesson.desc" ce="lesson.ce" open="lesson.open"></lesson>
+    <lesson ng-repeat="lesson in lessons" lesson="lesson"></lesson>
   </uib-accordion>
 </div>
 

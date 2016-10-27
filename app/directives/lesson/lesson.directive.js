@@ -7,16 +7,34 @@ angular.module('ceEditorApp')
     restrict: 'E',
     templateUrl: 'directives/lesson/lesson.html',
     scope: {
-      name: '=',
-      desc: '=',
-      ce: '=',
-      open: '='
+      lesson: '='
     },
-    controller: function($scope) {
+    controller: function($scope, $timeout) {
       $scope.complete = false;
+      if ($scope.lesson.complete) {
+        $scope.lesson.complete();
+      }
 
-      $scope.checkLesson = function() {
-        console.log('checkLesson');
+      var lastChecked = Date.now();
+      var timeout;
+
+      $scope.checkCompletion = function() {
+        if (Date.now() - lastChecked > 1000) { // 1 second
+          lastChecked = Date.now();
+
+          $scope.lesson.complete($scope.lesson.ce).then(function(instance) {
+            if (instance._concept && instance._concept.indexOf('tennis player') > -1) {
+              $scope.complete = true;
+            } else {
+              $scope.complete = false;
+            }
+          });
+        } else {
+          if (timeout) {
+            $timeout.cancel(timeout);
+          }
+          timeout = $timeout($scope.checkCompletion, 1000);
+        }
       };
     }
   };

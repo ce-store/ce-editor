@@ -8,6 +8,8 @@ router.use(bodyParser.json());
 router.get('/', controller.getCe);
 router.get('/things', controller.getThings);
 router.get('/concepts', controller.getConcepts);
+router.get('/instance/:name', controller.getInstance);
+
 router.post('/validate', controller.validate);
 router.post('/', controller.saveCe);
 

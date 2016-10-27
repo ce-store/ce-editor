@@ -66,6 +66,21 @@ function getThings(id, cb) {
     });
 }
 
+function getInstance(id, name, cb) {
+  'use strict';
+  var url = ceStore + id + '/instances/' + name + '?style=normalised';
+  request
+    .get(url, function (err, response, body) {
+      if (err) {
+        cb(err);
+      } else if (response.statusCode !== 200) {
+        cb(new Error(response.statusCode + ' - ' + response.statusMessage));
+      } else {
+        cb(null, body);
+      }
+    });
+}
+
 function getConcepts(id, cb) {
   'use strict';
   var url = ceStore + id + '/concepts?style=summary';
@@ -133,6 +148,7 @@ module.exports = {
   createStore: createStore,
   deleteStore: deleteStore,
   getThings: getThings,
+  getInstance: getInstance,
   getConcepts: getConcepts,
   postCe: postCe,
   validate: validate,
