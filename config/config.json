@@ -1,5 +1,5 @@
 {
-  "store": "http://localhost:8080/ce-store/",
+  "store": "http://editor-store.mybluemix.net/ce-store",
   "lang": "java",
   "edit": false
 }

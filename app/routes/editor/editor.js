@@ -90,7 +90,6 @@ angular.module('ceEditorApp')
     var doAsyncSeries = function(arr) {
       return arr.reduce(function (promise, text) {
         return promise.then(function() {
-          console.log('write sentence');
           return writeSentence(text);
         });
       }, $q.when());
@@ -142,15 +141,15 @@ angular.module('ceEditorApp')
       });
     };
 
-    // $timeout(function() {
-    //   ce.get()
-    //     .then(function(response) {
-    //       var data = response.data.split(loadCe);
-    //       $scope.ce = data[data.length - 1];
-    //       visuals.update();
-    //       if ($scope.ce.length === 0) {
-    //         $scope.restart();
-    //       }
-    //     });
-    // }, delay);
+    $timeout(function() {
+      ce.get()
+        .then(function(response) {
+          var data = response.data.split(loadCe);
+          $scope.ce = data[data.length - 1];
+          visuals.update();
+          if ($scope.ce.length === 0) {
+            $scope.restart();
+          }
+        });
+    }, delay);
   });
