@@ -1,6 +1,11 @@
 <h1>CE EDITOR</h1>
 
-<textarea id="editor" class="edit-area" ng-model="ce" ng-change="validate()"></textarea>
+<!-- <textarea id="editor" class="edit-area" ng-model="ce" ng-change="validate()"></textarea> -->
+<div id="editor" class="edit-area">
+  <uib-accordion close-others="false">
+    <lesson ng-repeat="lesson in lessons" name="lesson.name" desc="lesson.desc" ce="lesson.ce" open="lesson.open"></lesson>
+  </uib-accordion>
+</div>
 
 <div class="validation">
   <span class="validation" ng-class="valid ? 'text-success' : 'text-failure'">{{ validationText }}</span>

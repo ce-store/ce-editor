@@ -1,6 +1,7 @@
 angular.module('ceEditorApp', [
   'ui.router',
   'ui.bootstrap',
+  'ngAnimate',
   'textAngular'
 ])
 

@@ -1,0 +1,21 @@
+
+the thing 'Andy Murray' is a tennis player.
+
+
+-- Andy Murray is now a visual thing, a person and a tennis player.
+
+-- Lets add some more instances:
+
+there is a tennis player named 'Raphael Nadal'.
+
+there is a food named 'Strawberries'.
+
+
+-- CE instances can relate to each other using their properties:
+
+the person 'Andy Murray' likes the food 'Strawberries'.
+
+the tennis player 'Andy Murray' plays with the tennis player 'Raphael Nadal'.
+
+
+-- You can find out more here: https://github.com/ce-store/ce-store/wiki/cheatsheet

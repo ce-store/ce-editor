@@ -16,69 +16,63 @@ angular.module('ceEditorApp')
   });
   $scope.validationText = 'Not connected';
 
-  var loadCe = 'perform load sentences from url "/ce-store/ce/editor/cmd/load.cecmd". ';
+  // var loadCe = 'perform load sentences from url "/ce-store/ce/editor/cmd/load.cecmd". ';
 
   var base;
   var tutorial;
+
+  var desc = "<p>Welcome to the Controlled English (CE) editor, a visualisation of CE models.</p>" +
+    "<p>Controlled English allows you to describe a model using English sentences. Find out more about CE <a href='https://github.com/ce-store/ce-store'>here</a>.</p>" +
+    "<p>CE sentences are used for defining instances in the model.</p>" +
+    "<p>Here's an example:</p>" +
+    "<code>there is a thing named 'Andy Murray'.</code>" +
+    "<p>CE instances can be extended to other concepts:</p>" +
+    "<code>the thing 'Andy Murray' is a person.</code>" +
+    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Turn Andy into a tennis player</span></p>";
 
   config.getBase().then(function(response) {
     base = response.data;
     config.getTutorial().then(function(response) {
       tutorial = response.data;
-      console.log(base);
-      console.log(tutorial);
 
       $scope.lessons = [{
         name: 'Base CE',
-        ce: base
+        ce: base,
+        open: false
       }, {
         name: 'Lesson One',
-        ce: tutorial
+        desc: desc,
+        ce: tutorial,
+        open: true
       }];
-      // $scope.ce = base + '\n\n' + tutorial;
     });
   });
 
-  var tutorialText = [
-    '-- Welcome to the Controlled English (CE) editor.',
-    '-- Controlled English allows you to describe a model using English sentences. Any line beginning with a double dash is treated as a comment.',
-    '-- Here is a CE sentence:',
-    'there is a thing named \'Andy Murray\'.',
-    ' ',
-    '-- CE sentences are used for defining instances in the model.',
-    '-- As you can see on the right, Andy Murray now exists in the model.  This tutorial will display any instance that is a visual thing.',
-    '-- CE instances can be extended to other concepts:',
-    'the thing \'Andy Murray\' is a person.',
-    'the thing \'Andy Murray\' is a tennis player.',
-    ' ',
-    '-- Andy Murray is now a visual thing, a person and a tennis player.',
-    '-- Lets add some more instances:',
-    'there is a tennis player named \'Raphael Nadal\'.',
-    'there is a food named \'Strawberries\'.',
-    ' ',
-    // '-- Currently, the model doesn\'t know how to render the type food, but we can define it for this instance by adding a property:',
-    // 'the food \'Strawberries\' shows the icon \'Strawberry\'.',
-    ' ',
-    '-- CE instances can relate to each other using their properties:',
-    'the person \'Andy Murray\' likes the food \'Strawberries\'.',
-    'the tennis player \'Andy Murray\' plays with the tennis player \'Raphael Nadal\'.',
-    ' ',
-    '-- You can find out more here: https://github.com/ce-store/ce-store/wiki/cheatsheet'
-  ];
+  var getLatestCe = function() {
+    var ce = '';
+    $scope.lessons.forEach(function(lesson) {
+      ce += lesson.ce;
+    });
+    return ce;
+  };
 
   $scope.validate = function() {
-    ce.validate($scope.ce)
-      .then(function successCallback(response) {
-        if (response.data.alerts.errors.length > 0) {
-          $scope.valid = false;
-          $scope.validationText = invalidText;
-        } else {
-          $scope.valid = true;
-          $scope.validationText = validText;
-        }
-      }, function errorCallback() {
-        $scope.validationText = validationFailed;
-      });
+    var allCe = getLatestCe();
+    // console.log(allCe);
+    $scope.valid = true;
+    $scope.validationText = validText;
+    // ce.validate(allCe)
+    //   .then(function successCallback(response) {
+    //     if (response.data.alerts.errors.length > 0) {
+    //       $scope.valid = false;
+    //       $scope.validationText = invalidText;
+    //     } else {
+    //       $scope.valid = true;
+    //       $scope.validationText = validText;
+    //     }
+    //   }, function errorCallback() {
+    //     $scope.validationText = validationFailed;
+    //   });
   };
 
   var writeSentence = function(text) {
@@ -120,7 +114,9 @@ angular.module('ceEditorApp')
   // Button Functions
 
   $scope.update = function() {
-    ce.save(loadCe + $scope.ce).then(function() {
+    var allCe = getLatestCe();
+    console.log(allCe);
+    ce.save(allCe).then(function() {
       visuals.update();
     });
   };
@@ -163,7 +159,8 @@ angular.module('ceEditorApp')
     });
   };
 
-  // $timeout(function() {
+  $timeout(function() {
+    $scope.validate();
   //   ce.get()
   //     .then(function(response) {
   //       var data = response.data.split(loadCe);
@@ -173,5 +170,5 @@ angular.module('ceEditorApp')
   //         $scope.restart();
   //       }
   //     });
-  // }, delay);
+  }, delay);
 });

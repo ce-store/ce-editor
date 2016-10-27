@@ -29,6 +29,20 @@ textarea {
   height: 100%;
 }
 
+a {
+  color: #5dc1f1;
+}
+
+p {
+  font-family: "Helvetica", "san-serif";
+}
+
+code {
+  color: #5dc1f1;
+  background: #565656;
+  border-radius: 4px;
+}
+
 /* Editor */
 
 .editor {
@@ -40,11 +54,12 @@ textarea {
 }
 
 .edit-area {
-  margin: 10px 20px 20px 20px;
-  width: calc(100% - 40px);
-  height: calc(100% - 250px);
+  margin: 10px 0 0 0;
+  width: 100%;
+  height: calc(100% - 212px);
   background: none;
   border: none;
+  overflow: scroll;
 }
 
 .edit-area:focus {
@@ -70,7 +85,7 @@ textarea {
 /* Footer */
 
 .footer {
-  height: 96px;
+  height: 95px;
   background: #565656;
   padding-top: 10px;
 }
@@ -156,6 +171,18 @@ textarea {
   height: 100%;
   background: transparent;
   border: none;
+  box-shadow: none;
+  color: #ececec;
+  font-family: Helvetica;
+}
+
+.ta-scroll-window > .ta-bind {
+  padding: 6px 0;
+}
+
+.ta-scroll-window.form-control,
+.ta-scroll-window > .ta-bind {
+  min-height: 0;
 }
 
 /* Visual */
@@ -206,4 +233,74 @@ textarea {
   border-top: none;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
+}
+
+/* Lessons */
+
+.accordion-inner {
+  border-top: 0 none;
+}
+
+.panel-group {
+  margin: 0;
+}
+
+.panel-group .panel {
+  border-radius: 0;
+}
+
+.lesson-panel {
+  background: none;
+  box-shadow: none;
+}
+
+.lesson-panel,
+.panel-group .panel-heading + .panel-collapse > .panel-body {
+  border-top: 1px solid #949494;
+}
+
+.panel-heading {
+  border-radius: 0;
+  padding: 0;
+  margin: -10px 0;
+}
+
+.panel-heading:hover {
+  background: #565656;
+  text-decoration: none;
+}
+
+.panel-heading .panel-title {
+}
+
+.panel-title h4 {
+  padding: 20px 15px;
+}
+
+.panel-title .glyphicon {
+  float: right;
+  font-size: 0.6em;
+}
+
+.lesson-desc .glyphicon {
+  margin-right: 5px;
+  margin-top: 20px;
+}
+
+.lesson-area {
+  border: none;
+  width: 100%;
+  background: #565656;
+  color: #5dc1f1;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.next-btn {
+  background: #a52a2a;
+  float: right;
+}
+
+.lesson-task {
+  border-bottom: 1px solid;
 }

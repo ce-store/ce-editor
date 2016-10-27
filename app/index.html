@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css" />
     <link rel="stylesheet" href="bower_components/textAngular/dist/textAngular.css" />
+
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -59,14 +60,20 @@
     <script src="bower_components/textAngular/dist/textAngular.js"></script>
     <script src="bower_components/textAngular/dist/textAngular-sanitize.js"></script>
     <script src="bower_components/textAngular/dist/textAngularSetup.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="app.js"></script>
+
     <script src="routes/visual/visual.js"></script>
     <script src="routes/editor/editor.js"></script>
     <script src="routes/settings/settings.controller.js"></script>
+
+    <script src="directives/elastic/elastic.directive.js"></script>
+    <script src="directives/lesson/lesson.directive.js"></script>
+
     <script src="services/ce.js"></script>
     <script src="services/graph.js"></script>
     <script src="services/config.service.js"></script>
