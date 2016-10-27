@@ -1,13 +1,3 @@
-'use strict';
-
-/**
- * @ngdoc overview
- * @name ceEditorApp
- * @description
- * # ceEditorApp
- *
- * Main module of the application.
- */
 angular.module('ceEditorApp', [
   'ui.router',
   'ui.bootstrap',
@@ -15,6 +5,8 @@ angular.module('ceEditorApp', [
 ])
 
 .config(function($stateProvider, $urlRouterProvider) {
+  'use strict';
+
   $urlRouterProvider.otherwise('');
 
   $stateProvider
