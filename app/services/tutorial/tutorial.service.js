@@ -170,7 +170,7 @@ angular.module('ceEditorApp')
     "<p>Note the concept prefix <code>tennis player</code> is required when specifying an instance property.</p>" +
     "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Create a new tennis player that plays with Andy.</span></p>";
 
-  var lessonThreeCe = "there is a tennis player named 'Andy Murray'.";
+  var lessonThreeCe = "there is a tennis player named 'Andy Murray'.\n\n\n\n\n";
   var lessonThreeUpdatedCe = lessonThreeCe;
 
   var lessonThreeComplete = function(updatedCe) {

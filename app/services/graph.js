@@ -166,6 +166,12 @@ angular.module('ceEditorApp')
             graph.nodes.push(node);
           // If this node already exists, update it
           } else {
+            graph.nodes.forEach(function(node) {
+              if (node.id === thing._id) {
+                node.type = 'instance';
+              }
+            });
+
             var propertiesChecked = ['shows'];
             for (property in thing) {
               if (property.charAt(0) !== '_') {
