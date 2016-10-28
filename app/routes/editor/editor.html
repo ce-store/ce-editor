@@ -3,13 +3,13 @@
 <!-- <textarea id="editor" class="edit-area" ng-model="ce" ng-change="validate()"></textarea> -->
 <div id="editor" class="edit-area">
   <uib-accordion close-others="false">
-    <lesson ng-repeat="lesson in lessons" lesson="lesson"></lesson>
+    <lesson ng-if="lesson.passed || $index === currentLesson" ng-repeat="lesson in lessons track by $index" lesson="lesson"></lesson>
   </uib-accordion>
 </div>
 
-<div class="validation">
+<!-- <div class="validation">
   <span class="validation" ng-class="valid ? 'text-success' : 'text-failure'">{{ validationText }}</span>
-</div>
+</div> -->
 
 <div class="footer">
   <div class="buttons">

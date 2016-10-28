@@ -5,7 +5,7 @@ angular.module('ceEditorApp')
 
   var graph = visuals.graph();
   var nodeRadius = 40;
-  var distanceBetweenNodes = nodeRadius;
+  var distanceBetweenNodes = nodeRadius * 1.5;
   var nodeHeight = nodeRadius * 2;
   var nodeWidth = nodeRadius * 2;
   var link, node;
@@ -82,21 +82,38 @@ angular.module('ceEditorApp')
           var t = getTransform(d);
           var text = d3.select(this.nextSibling);
           var width = text.node().getComputedTextLength() + rect.padding;
-          return 'translate(' + (t.x - width / 2) + ', ' + (t.y - rect.height / 4 * 3) + ')';
+          var x = (t.x - width / 2);
+          var y = (t.y - rect.height / 4 * 3);
+
+          return 'translate(' + x + ', ' + y + ')';
         });
 
     var nodeSelection = nodes.selectAll('.node')
         .attr('transform', function(d) {
           var dx = d.x - nodeRadius;
           var dy = d.y - nodeRadius;
+
+          if (d.type === 'property') {
+            dx += nodeWidth / 4;
+            dy += nodeHeight / 4;
+          }
+
           return 'translate(' + dx + ', ' + dy + ')';
         });
 
     nodeSelection.selectAll('rect')
-        .attr('transform', function() {
+        .attr('transform', function(d) {
           var text = d3.select(this.nextSibling);
           var width = text.node().getComputedTextLength() + rect.padding;
-          return 'translate(' + (nodeWidth - width) / 2 + ', ' + (nodeHeight + 5) + ')';
+          var x = (nodeWidth - width) / 2;
+          var y = (nodeHeight + 5);
+
+          if (d.type === 'property') {
+            x -= nodeWidth / 4;
+            y -= nodeHeight / 2;
+          }
+
+          return 'translate(' + x + ', ' + y + ')';
         });
 
   }
@@ -164,8 +181,20 @@ angular.module('ceEditorApp')
         .on('end', dragended));
 
     var image = nodeEnter.append('image')
-        .attr('width', nodeWidth)
-        .attr('height', nodeHeight);
+        .attr('width', function(d) {
+          if (d.type === 'property') {
+            return nodeWidth / 2;
+          } else {
+            return nodeWidth;
+          }
+        })
+        .attr('height', function(d) {
+          if (d.type === 'property') {
+            return nodeHeight / 2;
+          } else {
+            return nodeHeight;
+          }
+        });
 
     nodeEnter.append('rect')
         .style('fill', rect.fill)
@@ -176,8 +205,20 @@ angular.module('ceEditorApp')
     nodeEnter.append('text')
         .style('fill', 'white')
         .style('text-anchor', 'middle')
-        .attr('dx', nodeRadius)
-        .attr('dy', nodeHeight + 20)
+        .attr('dx', function(d) {
+          if (d.type === 'property') {
+            return nodeRadius / 2;
+          } else {
+            return nodeRadius;
+          }
+        })
+        .attr('dy', function(d) {
+          if (d.type === 'property') {
+            return nodeHeight / 2 + 20;
+          } else {
+            return nodeHeight + 20;
+          }
+        })
         .text(function(d) { return d.id; });
 
     image
@@ -189,11 +230,15 @@ angular.module('ceEditorApp')
 
     nodeMerge.selectAll('image')
         .attr('xlink:href', function(d) {
-          var image = d.shows[0];
-          if (!image) {
-            image = 'circle.png';
+          var url = d.shows[0];
+          if (!url) {
+            url = 'circle.png';
           }
-          return 'assets/images/' + d.shows[0];
+
+          if (d.type === 'property') {
+            url = 'square.png';
+          }
+          return 'assets/images/' + url;
         });
 
     nodeMerge.selectAll('rect')

@@ -47,7 +47,8 @@ angular.module('ceEditorApp')
       while (l--) {
         var link = graph.links[l];
 
-        if (link.source.id === obj || link.target.id === obj) {
+        if (link.source === obj || link.target === obj ||
+            link.source.id === obj || link.target.id === obj) {
           graph.links.splice(l, 1);
         }
       }
@@ -125,12 +126,14 @@ angular.module('ceEditorApp')
 
           newThings[thing._id] = images;
           var property, values;
+          var i, propertyNode, value;
 
           // If this is a new node, add it
           if (!currentThings[thing._id]) {
             var node = {
               id: thing._id,
-              shows: images
+              shows: images,
+              type: 'instance'
             };
 
             currentThings[thing._id] = {};
@@ -141,6 +144,20 @@ angular.module('ceEditorApp')
                 values = thing[property];
                 values = Array.isArray(values) ? values : [values];
                 node[property] = values;
+
+                for (i = 0; i < values.length; ++i) {
+                  value = values[i];
+                  if (!currentThings[value]) {
+                    propertyNode = {
+                      id: value,
+                      type: 'property'
+                    };
+                    graph.nodes.push(propertyNode);
+                  }
+                  currentThings[value] = {};
+                  newThings[value] = [renderingMap.thing];
+                }
+
                 addLinks(values, thing, property);
                 currentThings[thing._id][property] = values;
               }
@@ -149,13 +166,26 @@ angular.module('ceEditorApp')
             graph.nodes.push(node);
           // If this node already exists, update it
           } else {
-            var propertiesChecked = [];
+            var propertiesChecked = ['shows'];
             for (property in thing) {
               if (property.charAt(0) !== '_') {
                 values = thing[property];
                 values = Array.isArray(values) ? values : [values];
                 propertiesChecked.push(property);
                 currentThings[thing._id][property] = values;
+
+                for (i = 0; i < values.length; ++i) {
+                  value = values[i];
+                  if (!currentThings[value]) {
+                    propertyNode = {
+                      id: value,
+                      type: 'property'
+                    };
+                    graph.nodes.push(propertyNode);
+                  }
+                  currentThings[value] = {};
+                  newThings[value] = [renderingMap.thing];
+                }
 
                 removeLinks(values);
                 addLinks(values, thing, property);
@@ -173,6 +203,7 @@ angular.module('ceEditorApp')
           }
         });
 
+        // Update or remove old things
         var n = graph.nodes.length;
         while (n--) {
           var node = graph.nodes[n];
@@ -190,7 +221,8 @@ angular.module('ceEditorApp')
             while (l--) {
               var link = graph.links[l];
 
-              if (link.source.id === node.id || link.target.id === node.id) {
+              if (link.source === node.id || link.target === node.id ||
+                  link.source.id === node.id || link.target.id === node.id) {
                 graph.links.splice(l, 1);
               }
             }

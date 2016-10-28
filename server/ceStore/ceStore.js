@@ -96,6 +96,7 @@ function getConcepts(id, cb) {
 
 function postCe(id, ce, cb) {
   'use strict';
+  ce = 'perform%20reset%20store. ' + ce;
   var url = ceStore + id + '/sources/generalCeForm?runRules=true&action=save';
   request
     .post({url: url, body: ce}, function (err, response, body) {
