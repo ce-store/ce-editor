@@ -31,6 +31,13 @@ angular.module('ceEditorApp')
     });
   };
 
+  var getRules = function() {
+    return $http({
+      method: 'GET',
+      url: 'api/rules'
+    });
+  };
+
   var getCe = function() {
     return $http({
       method: 'GET',
@@ -62,6 +69,7 @@ angular.module('ceEditorApp')
     getInstance: getInstance,
     getConcepts: getConcepts,
     getConcept: getConcept,
+    getRules: getRules,
     get: getCe,
     save: saveCe,
     validate: validateCe

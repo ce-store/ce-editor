@@ -48,6 +48,18 @@ function getConcept(req, res) {
   });
 }
 
+function getRules(req, res) {
+  'use strict';
+
+  ceStore.getRules(req.sessionID, function(err, body) {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(body);
+    }
+  });
+}
+
 function getCe(req, res) {
   'use strict';
 
@@ -93,6 +105,7 @@ module.exports = {
   getInstance: getInstance,
   getConcepts: getConcepts,
   getConcept: getConcept,
+  getRules: getRules,
   getCe: getCe,
   saveCe: saveCe,
   validate: validate

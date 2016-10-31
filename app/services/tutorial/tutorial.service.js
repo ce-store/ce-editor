@@ -159,7 +159,7 @@ angular.module('ceEditorApp')
     "<pre><code>conceptualise a ~ tennis player ~ TP that\n" +
     "  is a person and\n" +
     "  ~ plays with ~ the tennis player TP.</code></pre>" +
-    "<p>Here we can see a concept inheriting from another, <code>tennis player</code> becomes a child concept of <code>person</code> and inherits its properties.</p>" +
+    "<p>Here we can see a concept inheriting from another, <code>tennis player</code> becomes a child concept of <code>person</code> and inherits its properties. We will talk more about this later.</p>" +
     "<p>It also gains a new property <code>plays with</code>, this property is a bit different as it accepts a <code>tennis player</code> instead of a regular string value. For example:</p>" +
     "<pre><code>the tennis player 'Andy Murray'\n" +
     "  plays with the tennis player 'Tim Henman'.</code></pre>" +
@@ -267,7 +267,7 @@ angular.module('ceEditorApp')
     "<p>The lines following the <code>conceptualise</code> are property definitions.</p>" +
     "<p>As these don't connect to other instances we use <code>the value</code> to describe the type (This can also be used in defining instances, but it's not necessary). Letter(s) are used to define where the property name will appear, and we place the property name within the tildes.</p>" +
     "<p>The two types of property definitions are simply to make the resulting sentences more readable, they function in exactly the same way.</p>" +
-    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Extend your spectator concept and give your spectator some properties.</span></p>";
+    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Extend your spectator concept to give your spectator some properties, including that the spectator 'watches' a tennis player.</span></p>";
 
   var lessonFiveCe = "conceptualise a ~ spectator ~ S.\n\n\n";
   var lessonFiveUpdatedCe = lessonFiveCe;
@@ -288,16 +288,83 @@ angular.module('ceEditorApp')
           var instances = response.data;
 
           if (instances.length > 0) {
-            var propertiesFound = false;
+            var found = false;
             instances.forEach(function(instance) {
+
               for (var prop in instance) {
-                if (instance.hasOwnProperty(prop) && prop.indexOf('_') !== 0) {
-                  propertiesFound = true;
+                if (instance.hasOwnProperty(prop) && instance.watches) {
+                  ce.getInstance(instance.watches).then(function(response) {
+                    if (response) {
+                      var instance = response.data;
+                      if (instance._concept.indexOf('tennis player') > -1) {
+                        found = true;
+                      }
+
+                      if (found) {
+                        deferred.resolve();
+                        return;
+                      }
+
+                      deferred.reject();
+                    }
+                  });
+                } else {
+                  deferred.reject();
                 }
               }
             });
+          }
+        }
+      });
+    });
+    return deferred.promise;
+  };
 
-            if (propertiesFound) {
+  var lessonFiveNext = function() {
+    lessons[5].passed = true;
+    currentLesson++;
+    lessons[5].open = false;
+    lessons[6].open = true;
+    notifyObservers();
+  };
+
+  // Lesson 6
+
+  var lessonSixDesc = "<p>By creating a heirarchy of concepts, we can reduce the amount of work needed to create a good model.</p>" +
+    "<p>Concepts that inherit from other concepts gain all the properties defined in their parents. For example:</p>" +
+    "<pre><code>conceptualise a ~ tennis player ~ TP that\n" +
+    "  is a person and\n" +
+    "  ~ plays with ~ the tennis player TP.</code></pre>" +
+    "<p>The phrase <code>is a person</code> means that <code>person</code> becomes a parent concept of <code>tennis player</code>. A concept can have any number of parent or child concepts.</p>" +
+    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Extend your spectator concept to be a type of person and give your spectator a hair colour.</span></p>";
+
+  var lessonSixCe = "conceptualise a ~ spectator ~ S.\n\n\n";
+  var lessonSixUpdatedCe = lessonSixCe;
+
+  var lessonSixComplete = function(updatedCe) {
+    var deferred = $q.defer();
+    if (!updatedCe) {
+      updatedCe = lessonSixCe;
+    }
+    lessonSixUpdatedCe = updatedCe;
+    var allCe = getCurrentCe();
+
+    ce.save(allCe, lessons).then(function() {
+      visuals.update();
+    }).then(function() {
+      ce.getConcept('spectator').then(function(response) {
+        if (response) {
+          var instances = response.data;
+
+          if (instances.length > 0) {
+            var found = false;
+            instances.forEach(function(instance) {
+              if (instance['hair colour']) {
+                found = true;
+              }
+            });
+
+            if (found) {
               deferred.resolve();
               return;
             }
@@ -310,11 +377,81 @@ angular.module('ceEditorApp')
     return deferred.promise;
   };
 
-  var lessonFiveNext = function() {
-    lessons[5].passed = true;
+  var lessonSixNext = function() {
+    lessons[6].passed = true;
     currentLesson++;
-    lessons[5].open = false;
-    lessons[6].open = true;
+    lessons[6].open = false;
+    lessons[7].open = true;
+    notifyObservers();
+  };
+
+  // Lesson 7
+
+  var lessonSevenDesc = "<p>Now you can create and extend your model easily, however you may want your model to adapt automatically to new events occurring.</p>" +
+    "<p>Controlled English has a powerful rules engine that allows us to easily extend the model based on some criteria. For example:</p>" +
+    "<pre><code>[ Famous tennis players ]\n" +
+    "if\n" +
+    "  ( the tennis player P1 plays with the tennis player 'Andy Murray' )\n" +
+    "then\n" +
+    "  ( the tennis player P1 is a famous tennis player )\n" +
+    ".</code></pre>" +
+    "<p>The rule is named on the first line in square brackets. This is used to later run the rule.</p>" +
+    "<p>Then it takes a simple <code>if</code> <code>then</code> format, where if the criteria in the first statement is met, then the second statement becomes fact. The letters <code>P1</code> will be replaced by each matching instance name when the rule is run.</p>" +
+    "<p>To pass this lesson, 'Auto-run rules' must be turned on in the CE-Store. This setting can be found on the 'Config' tab in the Engineering Panel.</p>" +
+    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Write a rule (and relevent concepts) that if a spectator watches Andy Murray, then they are a loyal fan. Make sure there is at least one loyal fan.</span></p>";
+
+  var lessonSevenCe = "\n\n\n\n\n";
+  var lessonSevenUpdatedCe = lessonSevenCe;
+
+  var lessonSevenComplete = function(updatedCe) {
+    var deferred = $q.defer();
+    if (!updatedCe) {
+      updatedCe = lessonSevenCe;
+    }
+    lessonSevenUpdatedCe = updatedCe;
+    var allCe = getCurrentCe();
+
+    ce.save(allCe, lessons).then(function() {
+      visuals.update();
+    }).then(function() {
+      ce.getRules().then(function(response) {
+        if (response &&
+            response.data &&
+            response.data.length > 0) {
+          ce.getConcept('spectator').then(function(response) {
+            if (response) {
+              var instances = response.data;
+
+              if (instances.length > 0) {
+                var found = false;
+                instances.forEach(function(instance) {
+                  if (instance._concept.indexOf('loyal fan') > -1) {
+                    found = true;
+                  }
+                });
+
+                if (found) {
+                  deferred.resolve();
+                  return;
+                }
+              }
+            }
+
+            deferred.reject();
+          });
+        } else {
+          deferred.reject();
+        }
+      });
+    });
+    return deferred.promise;
+  };
+
+  var lessonSevenNext = function() {
+    lessons[7].passed = true;
+    currentLesson++;
+    lessons[7].open = false;
+    lessons[8].open = true;
     notifyObservers();
   };
 
@@ -467,6 +604,22 @@ angular.module('ceEditorApp')
     open: false,
     complete: lessonFiveComplete,
     next: lessonFiveNext,
+    passed: false
+  }, {
+    name: 'Six: Inheritance',
+    desc: lessonSixDesc,
+    ce: lessonSixUpdatedCe,
+    open: false,
+    complete: lessonSixComplete,
+    next: lessonSixNext,
+    passed: false
+  }, {
+    name: 'Seven: The power of rules',
+    desc: lessonSevenDesc,
+    ce: lessonSevenUpdatedCe,
+    open: false,
+    complete: lessonSevenComplete,
+    next: lessonSevenNext,
     passed: false
   }, {
     name: 'Playground',

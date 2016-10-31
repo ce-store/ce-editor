@@ -107,6 +107,19 @@ function getConcept(id, name, cb) {
     });
 }
 
+function getRules(id, cb) {
+  'use strict';
+  var url = ceStore + id + '/rules';
+  request
+    .get(url, function (err, response, body) {
+      if (err) {
+        cb(err);
+      } else {
+        cb(null, body);
+      }
+    });
+}
+
 function postCe(id, ce, cb) {
   'use strict';
   ce = 'perform%20reset%20store. ' + ce;
@@ -165,6 +178,7 @@ module.exports = {
   getInstance: getInstance,
   getConcepts: getConcepts,
   getConcept: getConcept,
+  getRules: getRules,
   postCe: postCe,
   validate: validate,
   reset: reset

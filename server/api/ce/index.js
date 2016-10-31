@@ -9,6 +9,7 @@ router.get('/', controller.getCe);
 router.get('/things', controller.getThings);
 router.get('/concepts', controller.getConcepts);
 router.get('/concept/:name', controller.getConcept);
+router.get('/rules', controller.getRules);
 router.get('/instance/:name', controller.getInstance);
 
 router.post('/validate', controller.validate);
