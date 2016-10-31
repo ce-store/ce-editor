@@ -18,7 +18,7 @@ git clone https://github.com/ce-store/ce-editor
 git clone https://github.com/ce-store/ce-store
 ```
 
-* Follow the instruction on the [CE-Store](https://github.com/ce-store/ce-store) Readme to run it.
+* Follow the instructions on the [CE-Store Readme](https://github.com/ce-store/ce-editor/blob/master/README.md) to run it.
 
 * Update `config/config.json` in this project with your CE-Store endpoint.
 
