@@ -27,8 +27,6 @@ angular.module('ceEditorApp')
     "\n" +
     "conceptualise a ~ food ~ F.\n" +
     "\n" +
-    "conceptualise a ~ location ~ L.\n" +
-    "\n" +
     "\n" +
     "the entity concept 'thing' is rendered by the value 'circle.png'.\n" +
     "\n" +
@@ -50,7 +48,7 @@ angular.module('ceEditorApp')
     "<p>CE sentences are used for defining instances in the model.</p>" +
     "<p>Here's an example:</p>" +
     "<code>there is a thing named 'Andy Murray'.</code>" +
-    "<p>Instance names need to be surrounded with single quotes if they contain spaces.</p>" +
+    "<p>CE sentences always end in a full stop <code>.</code> and instance names need to be surrounded with single quotes <code>''</code> if they contain spaces.</p>" +
     "<p>Instances can be extended to other concepts:</p>" +
     "<code>the thing 'Andy Murray' is a person.</code>" +
     "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Turn Andy into a tennis player</span></p>";
@@ -98,16 +96,14 @@ angular.module('ceEditorApp')
     "  has 'brown' as hair colour.</code></pre>" +
     "<pre><code>the person 'Andy Murray'\n" +
     "  owns 'cats'.</code></pre>" +
-    "<p>The first example puts the property value (<code>brown</code>) first, and the second puts the property value (<code>cats</code>) second.</p>" +
+    "<p>The first example puts the property value <code>brown</code> first, and the second puts the property value <code>cats</code> second.</p>" +
     "<p>We can find out which definition to use from the model:</p>" +
     "<pre><code>conceptualise a ~ person ~ P that\n" +
     "  has the value HC as ~ hair colour ~ and\n" +
     "  has the value EC as ~ eye colour ~ and\n" +
     "  ~ owns ~ the value O and\n" +
     "  ~ prefers ~ the value P.\n</code></pre>" +
-    "<p>The <code>conceptualise</code> keyword is used to define a new concept.</p>" +
-    "<p>Tildes <code>~</code> surround any user defined names, such as the names of concepts and properties.</p>" +
-    "<p>We will come back to this later.</p>" +
+    "<p>A later lesson will explain the different components in a conceptualise statement. The important parts here are the different property definitions and the word ordering.</p>" +
     "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Set Andy's eye colour and prefers properties.</span></p>";
 
   var lessonTwoCe = "the person 'Andy Murray'\n" +
@@ -208,6 +204,56 @@ angular.module('ceEditorApp')
     notifyObservers();
   };
 
+  // Lesson 4
+
+  var lessonFourDesc = "<p>In the previous examples we've used the base model to create instances. The base model can be viewed under the Base CE tab.</p>" +
+    "<p>If we want to extend our model further, we need to create new concepts.</p>" +
+    "<p>Defining concepts uses the keyword <code>conceptualise</code>, this tells the CE-Store we're creating a new concept. For example:</p>" +
+    "<pre><code>conceptualise a ~ person ~ P.</code></pre>" +
+    "<p>Tildes <code>~</code> surround any user defined names, such as the name of the concept.</p>" +
+    "<p>After the concept name is the letter <code>P</code>, this symbolises where the instance name would go in the instance definition.</p>" +
+    "<p>It is not necessary to add any properties to your concept, they can always be added later.</p>" +
+    // "<p>The following lines define the properties. As these won't connect to other instances we use <code>the value</code> to describe the type (This can also be used in defining instances, but it's not necessary). Again, letters are used to define where the property name will appear, and we place the property name within the tildes.</p>"
+    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Create a new concept named 'spectator' and add a new spectator instance.</span></p>";
+
+  var lessonFourCe = "\n\n\n";
+  var lessonFourUpdatedCe = lessonFourCe;
+
+  var lessonFourComplete = function(updatedCe) {
+    var deferred = $q.defer();
+    if (!updatedCe) {
+      updatedCe = lessonThreeCe;
+    }
+    lessonThreeUpdatedCe = updatedCe;
+    var allCe = getCurrentCe();
+
+    ce.save(allCe, lessons).then(function() {
+      visuals.update();
+    }).then(function() {
+      ce.getConcept('spectator').then(function(response) {
+        if (response) {
+          var instances = response.data;
+
+          if (instances.length > 0) {
+            deferred.resolve();
+            return;
+          }
+        }
+
+        deferred.reject();
+      });
+    });
+    return deferred.promise;
+  };
+
+  var lessonFourNext = function() {
+    lessons[4].passed = true;
+    currentLesson++;
+    lessons[4].open = false;
+    lessons[5].open = true;
+    notifyObservers();
+  };
+
   // Playground
 
   var playgroundDesc = "<p>Congratulations on completing the tutorial!</p>" +
@@ -283,6 +329,35 @@ angular.module('ceEditorApp')
     lessons[currentLesson].passed = true;
   };
 
+  var getLessons = function() {
+    var deferred = $q.defer();
+
+    ce.get().then(function(response) {
+      if (response.data && response.data.lessons) {
+        var sessionLessons = response.data.lessons;
+        currentLesson = 1;
+        sessionLessons.forEach(function(lesson, i) {
+          lesson.complete = lessons[i].complete;
+          lesson.next = lessons[i].next;
+          if (i > 0 && lesson.passed) {
+            currentLesson++;
+          }
+        });
+        lessons = sessionLessons;
+
+        if (lessons[lessons.length - 1].passed) {
+          currentLesson = lessons.length - 1;
+        }
+
+        deferred.resolve(response.data.lessons);
+      } else {
+        deferred.resolve(lessons);
+      }
+    });
+
+    return deferred.promise;
+  };
+
   var lessons = [{
     name: 'Base CE',
     desc: baseDesc,
@@ -314,6 +389,14 @@ angular.module('ceEditorApp')
     next: lessonThreeNext,
     passed: false
   }, {
+    name: 'Four: New concepts',
+    desc: lessonFourDesc,
+    ce: lessonFourUpdatedCe,
+    open: false,
+    complete: lessonFourComplete,
+    next: lessonFourNext,
+    passed: false
+  }, {
     name: 'Playground',
     desc: playgroundDesc,
     ce: '',
@@ -321,35 +404,6 @@ angular.module('ceEditorApp')
     complete: playgroundComplete,
     passed: false
   }];
-
-  var getLessons = function() {
-    var deferred = $q.defer();
-
-    ce.get().then(function(response) {
-      if (response.data && response.data.lessons) {
-        var sessionLessons = response.data.lessons;
-        currentLesson = 1;
-        sessionLessons.forEach(function(lesson, i) {
-          lesson.complete = lessons[i].complete;
-          lesson.next = lessons[i].next;
-          if (i > 0 && lesson.passed) {
-            currentLesson++;
-          }
-        });
-        lessons = sessionLessons;
-
-        if (lessons[lessons.length - 1].passed) {
-          currentLesson = lessons.length - 1;
-        }
-
-        deferred.resolve(response.data.lessons);
-      } else {
-        deferred.resolve(lessons);
-      }
-    });
-
-    return deferred.promise;
-  };
 
   return {
     getLessons: getLessons,

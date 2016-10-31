@@ -24,6 +24,13 @@ angular.module('ceEditorApp')
     });
   };
 
+  var getConcept = function(name) {
+    return $http({
+      method: 'GET',
+      url: 'api/concept/' + name
+    });
+  };
+
   var getCe = function() {
     return $http({
       method: 'GET',
@@ -54,6 +61,7 @@ angular.module('ceEditorApp')
     getThings: getThings,
     getInstance: getInstance,
     getConcepts: getConcepts,
+    getConcept: getConcept,
     get: getCe,
     save: saveCe,
     validate: validateCe

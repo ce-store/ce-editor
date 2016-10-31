@@ -36,6 +36,18 @@ function getConcepts(req, res) {
   });
 }
 
+function getConcept(req, res) {
+  'use strict';
+
+  ceStore.getConcept(req.sessionID, req.params.name, function(err, body) {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(body);
+    }
+  });
+}
+
 function getCe(req, res) {
   'use strict';
 
@@ -80,6 +92,7 @@ module.exports = {
   getThings: getThings,
   getInstance: getInstance,
   getConcepts: getConcepts,
+  getConcept: getConcept,
   getCe: getCe,
   saveCe: saveCe,
   validate: validate

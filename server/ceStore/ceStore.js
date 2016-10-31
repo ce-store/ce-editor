@@ -94,6 +94,19 @@ function getConcepts(id, cb) {
     });
 }
 
+function getConcept(id, name, cb) {
+  'use strict';
+  var url = ceStore + id + '/concepts/' + name + '/instances?style=normalised';
+  request
+    .get(url, function (err, response, body) {
+      if (err) {
+        cb(err);
+      } else {
+        cb(null, body);
+      }
+    });
+}
+
 function postCe(id, ce, cb) {
   'use strict';
   ce = 'perform%20reset%20store. ' + ce;
@@ -151,6 +164,7 @@ module.exports = {
   getThings: getThings,
   getInstance: getInstance,
   getConcepts: getConcepts,
+  getConcept: getConcept,
   postCe: postCe,
   validate: validate,
   reset: reset
