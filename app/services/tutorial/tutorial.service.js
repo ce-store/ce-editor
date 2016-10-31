@@ -222,9 +222,9 @@ angular.module('ceEditorApp')
   var lessonFourComplete = function(updatedCe) {
     var deferred = $q.defer();
     if (!updatedCe) {
-      updatedCe = lessonThreeCe;
+      updatedCe = lessonFourCe;
     }
-    lessonThreeUpdatedCe = updatedCe;
+    lessonFourUpdatedCe = updatedCe;
     var allCe = getCurrentCe();
 
     ce.save(allCe, lessons).then(function() {
@@ -251,6 +251,70 @@ angular.module('ceEditorApp')
     currentLesson++;
     lessons[4].open = false;
     lessons[5].open = true;
+    notifyObservers();
+  };
+
+  // Lesson 5
+
+  var lessonFiveDesc = "<p>The CE-Store allows us to define the same concept or instance multiple times and will combine any differences.</p>" +
+    "<p>So if we want to add some properties to an earlier definition, we can either edit the original definition, or write it again. This won't overwrite any properties of first definition.</p>" +
+    "<p>So to extend the person definition, we can write:</p>" +
+    "<pre><code>conceptualise a ~ person ~ P that\n" +
+    "  has the value HC as ~ hair colour ~ and\n" +
+    "  has the value EC as ~ eye colour ~ and\n" +
+    "  ~ owns ~ the value O and\n" +
+    "  ~ prefers ~ the value P.\n</code></pre>" +
+    "<p>The lines following the <code>conceptualise</code> are property definitions.</p>" +
+    "<p>As these don't connect to other instances we use <code>the value</code> to describe the type (This can also be used in defining instances, but it's not necessary). Letter(s) are used to define where the property name will appear, and we place the property name within the tildes.</p>" +
+    "<p>The two types of property definitions are simply to make the resulting sentences more readable, they function in exactly the same way.</p>" +
+    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Extend your spectator concept and give your spectator some properties.</span></p>";
+
+  var lessonFiveCe = "conceptualise a ~ spectator ~ S.\n\n\n";
+  var lessonFiveUpdatedCe = lessonFiveCe;
+
+  var lessonFiveComplete = function(updatedCe) {
+    var deferred = $q.defer();
+    if (!updatedCe) {
+      updatedCe = lessonFiveCe;
+    }
+    lessonFiveUpdatedCe = updatedCe;
+    var allCe = getCurrentCe();
+
+    ce.save(allCe, lessons).then(function() {
+      visuals.update();
+    }).then(function() {
+      ce.getConcept('spectator').then(function(response) {
+        if (response) {
+          var instances = response.data;
+
+          if (instances.length > 0) {
+            var propertiesFound = false;
+            instances.forEach(function(instance) {
+              for (var prop in instance) {
+                if (instance.hasOwnProperty(prop) && prop.indexOf('_') !== 0) {
+                  propertiesFound = true;
+                }
+              }
+            });
+
+            if (propertiesFound) {
+              deferred.resolve();
+              return;
+            }
+          }
+        }
+
+        deferred.reject();
+      });
+    });
+    return deferred.promise;
+  };
+
+  var lessonFiveNext = function() {
+    lessons[5].passed = true;
+    currentLesson++;
+    lessons[5].open = false;
+    lessons[6].open = true;
     notifyObservers();
   };
 
@@ -281,8 +345,6 @@ angular.module('ceEditorApp')
       callback();
     });
   };
-
-  var currentLesson = 1;
 
   var getCurrentLesson = function() {
     return currentLesson;
@@ -358,6 +420,8 @@ angular.module('ceEditorApp')
     return deferred.promise;
   };
 
+  var currentLesson = 1;
+
   var lessons = [{
     name: 'Base CE',
     desc: baseDesc,
@@ -395,6 +459,14 @@ angular.module('ceEditorApp')
     open: false,
     complete: lessonFourComplete,
     next: lessonFourNext,
+    passed: false
+  }, {
+    name: 'Five: Extending concepts',
+    desc: lessonFiveDesc,
+    ce: lessonFiveUpdatedCe,
+    open: false,
+    complete: lessonFiveComplete,
+    next: lessonFiveNext,
     passed: false
   }, {
     name: 'Playground',

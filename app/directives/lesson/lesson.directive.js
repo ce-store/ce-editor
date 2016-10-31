@@ -50,7 +50,9 @@ angular.module('ceEditorApp')
 
         ce.validate($scope.lesson.ce)
           .then(function successCallback(response) {
-            if (response.data.alerts.errors.length > 0) {
+            if (response.data.alerts &&
+                response.data.alerts.errors &&
+                response.data.alerts.errors.length > 0) {
               $scope.valid = false;
               $scope.validationText = invalidText;
               deferred.reject();
