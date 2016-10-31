@@ -93,6 +93,17 @@ code, pre {
   background: #949494;
 }
 
+.btn-warning {
+  background: #a24646;
+  border: 1px solid #a24646;
+}
+
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active {
+  background: #882d2d;
+  border: 1px solid #882d2d;
+  outline: none;
+}
+
 .buttons {
   display: flex;
   align-items: center;
@@ -121,7 +132,7 @@ code, pre {
 }
 
 .edit-buttons .btn {
-  width: 31%;
+  width: 32%;
 }
 
 .store {
@@ -225,7 +236,7 @@ code, pre {
   padding-right: 0;
 }
 
-/* Settings Modal */
+/* Modals */
 
 .modal-content {
   background: #444444;
@@ -250,6 +261,11 @@ code, pre {
   border-top: none;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
+}
+
+.confirm-modal-body {
+  height: 120px;
+  padding-bottom: 40px;
 }
 
 /* Lessons */

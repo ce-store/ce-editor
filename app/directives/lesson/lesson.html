@@ -10,5 +10,5 @@
   <text-angular ng-if="lesson.desc" ng-model="lesson.desc" class="lesson-desc" ta-disabled="true"></text-angular>
   <textarea elastic class="lesson-area" ng-model="lesson.ce" ng-change="checkCompletion()" taDisabled></textarea>
   <span class="validation" ng-class="valid ? 'text-success' : 'text-failure'">{{ validationText }}</span>
-  <button class="btn next-btn" ng-show="lesson.desc" ng-disabled="!complete" ng-click="lesson.next()">Next</button>
+  <button class="btn next-btn" ng-show="lesson.next" ng-disabled="!complete" ng-click="lesson.next()">Next</button>
 </div>
