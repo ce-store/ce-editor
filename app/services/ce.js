@@ -31,11 +31,14 @@ angular.module('ceEditorApp')
     });
   };
 
-  var saveCe = function(ce) {
+  var saveCe = function(ce, lessons) {
     return $http({
       method: 'POST',
       url: 'api',
-      data: {ce: ce}
+      data: {
+        ce: ce,
+        lessons: lessons
+      }
     });
   };
 

@@ -40,7 +40,10 @@ function getCe(req, res) {
   'use strict';
 
   if (req.session.ce) {
-    res.send(req.session.ce);
+    res.send({
+      ce: req.session.ce,
+      lessons: req.session.lessons
+    });
   } else {
     res.send('');
   }
@@ -50,6 +53,7 @@ function saveCe(req, res) {
   'use strict';
 
   req.session.ce = req.body.ce;
+  req.session.lessons = req.body.lessons;
 
   ceStore.postCe(req.sessionID, req.body.ce, function(err) {
     if (err) {

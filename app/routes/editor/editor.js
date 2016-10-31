@@ -8,14 +8,16 @@ angular.module('ceEditorApp')
   config.getConfig().then(function(cfg) {
     $scope.ceStore = cfg.data.store;
   });
-  $scope.lessons = tutorial.lessons;
-  $scope.currentLesson = tutorial.getCurrentLesson();
-
-  tutorial.registerCallback(function() {
+  tutorial.getLessons().then(function(lessons) {
+    $scope.lessons = lessons;
     $scope.currentLesson = tutorial.getCurrentLesson();
-  });
 
-  $scope.lessons[1].complete();
+    tutorial.registerCallback(function() {
+      $scope.currentLesson = tutorial.getCurrentLesson();
+    });
+
+    $scope.lessons[$scope.currentLesson].complete();
+  });
 
   $scope.resetTutorial = function() {
     var modalInstance = $uibModal.open({
@@ -33,10 +35,16 @@ angular.module('ceEditorApp')
     });
 
     modalInstance.result.then(function () {
-      tutorial.resetLessons();
-      $scope.currentLesson = tutorial.getCurrentLesson();
-      $scope.lessons = tutorial.lessons;
-      $scope.lessons[1].complete();
+      var thenFunc = function() {
+        tutorial.getLessons().then(function(lessons) {
+          console.log(lessons);
+          $scope.lessons = lessons;
+          $scope.currentLesson = tutorial.getCurrentLesson();
+          $scope.lessons[$scope.currentLesson].complete();
+        });
+      };
+
+      tutorial.resetLessons().then(thenFunc, thenFunc);
     });
   };
 

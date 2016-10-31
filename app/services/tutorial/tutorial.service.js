@@ -63,7 +63,7 @@ angular.module('ceEditorApp')
     lessonOneUpdatedCe = updatedCe;
     var allCe = getCurrentCe();
 
-    ce.save(allCe).then(function() {
+    ce.save(allCe, lessons).then(function() {
       visuals.update();
     }).then(function() {
       ce.getInstance('Andy Murray').then(function(response) {
@@ -123,7 +123,7 @@ angular.module('ceEditorApp')
     lessonTwoUpdatedCe = updatedCe;
     var allCe = getCurrentCe();
 
-    ce.save(allCe).then(function() {
+    ce.save(allCe, lessons).then(function() {
       visuals.update();
     }).then(function() {
       ce.getInstance('Andy Murray').then(function(response) {
@@ -181,7 +181,7 @@ angular.module('ceEditorApp')
     lessonThreeUpdatedCe = updatedCe;
     var allCe = getCurrentCe();
 
-    ce.save(allCe).then(function() {
+    ce.save(allCe, lessons).then(function() {
       visuals.update();
     }).then(function() {
       ce.getInstance('Andy Murray').then(function(response) {
@@ -220,7 +220,7 @@ angular.module('ceEditorApp')
     }
     var allCe = lessons[0].ce + updatedCe;
 
-    ce.save(allCe).then(function() {
+    ce.save(allCe, lessons).then(function() {
       visuals.update();
     }).then(function() {
       deferred.resolve();
@@ -270,6 +270,9 @@ angular.module('ceEditorApp')
     lessons[1].ce = lessonOneUpdatedCe;
     lessons[2].ce = lessonTwoUpdatedCe;
     lessons[3].ce = lessonThreeUpdatedCe;
+    lessons[4].ce = '';
+
+    return lessons[1].complete();
   };
 
   var skip = function() {
@@ -319,8 +322,37 @@ angular.module('ceEditorApp')
     passed: false
   }];
 
+  var getLessons = function() {
+    var deferred = $q.defer();
+
+    ce.get().then(function(response) {
+      if (response.data && response.data.lessons) {
+        var sessionLessons = response.data.lessons;
+        currentLesson = 1;
+        sessionLessons.forEach(function(lesson, i) {
+          lesson.complete = lessons[i].complete;
+          lesson.next = lessons[i].next;
+          if (i > 0 && lesson.passed) {
+            currentLesson++;
+          }
+        });
+        lessons = sessionLessons;
+
+        if (lessons[lessons.length - 1].passed) {
+          currentLesson = lessons.length - 1;
+        }
+
+        deferred.resolve(response.data.lessons);
+      } else {
+        deferred.resolve(lessons);
+      }
+    });
+
+    return deferred.promise;
+  };
+
   return {
-    lessons: lessons,
+    getLessons: getLessons,
     getCurrentLesson: getCurrentLesson,
     registerCallback: registerCallback,
     resetLessons: resetLessons,
