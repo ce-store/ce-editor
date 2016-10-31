@@ -68,6 +68,9 @@ angular.module('ceEditorApp')
       };
 
       $scope.validate();
+      $timeout(function() {
+        $scope.checkCompletion();
+      });
     }
   };
 });

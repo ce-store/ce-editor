@@ -1,26 +1,21 @@
 <h1>CE EDITOR</h1>
 
-<!-- <textarea id="editor" class="edit-area" ng-model="ce" ng-change="validate()"></textarea> -->
 <div id="editor" class="edit-area">
   <uib-accordion close-others="false">
     <lesson ng-if="lesson.passed || $index === currentLesson" ng-repeat="lesson in lessons track by $index" lesson="lesson"></lesson>
   </uib-accordion>
 </div>
 
-<!-- <div class="validation">
-  <span class="validation" ng-class="valid ? 'text-success' : 'text-failure'">{{ validationText }}</span>
-</div> -->
-
 <div class="footer">
   <div class="buttons">
-    <div class="tutorial-buttons">
-      <button ng-show="writing" class="btn" ng-click="skip()">Skip Tutorial</button>
-      <button ng-show="!writing" class="btn" ng-click="restart()">Restart Tutorial</button>
+    <div ng-show="showTutorial" class="tutorial-buttons">
+      <button class="btn" ng-click="resetTutorial()">Reset Tutorial</button>
+      <button class="btn" ng-click="skipTutorial()">Skip Tutorial</button>
     </div>
 
-    <span class="vertical-divider"></span>
+    <!-- <span class="vertical-divider"></span> -->
 
-    <div class="edit-buttons">
+    <div ng-show="!showTutorial" class="edit-buttons">
       <button class="btn" ng-click="update()" ng-disabled="!valid">Update</button>
       <button class="btn" ng-click="clear()">Clear</button>
       <button class="btn" ng-click="export()">Export</button>

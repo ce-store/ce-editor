@@ -204,8 +204,28 @@ angular.module('ceEditorApp')
     lessons[3].passed = true;
     currentLesson++;
     lessons[3].open = false;
-    // lessons[4].open = true;
+    lessons[4].open = true;
     notifyObservers();
+  };
+
+  // Playground
+
+  var playgroundDesc = "<p>Congratulations on completing the tutorial!</p>" +
+    "Now you can build your own model from scratch.";
+
+  var playgroundComplete = function(updatedCe) {
+    var deferred = $q.defer();
+    if (!updatedCe) {
+      updatedCe = '';
+    }
+    var allCe = lessons[0].ce + updatedCe;
+
+    ce.save(allCe).then(function() {
+      visuals.update();
+    }).then(function() {
+      deferred.resolve();
+    });
+    return deferred.promise;
   };
 
   // General functions
@@ -234,6 +254,32 @@ angular.module('ceEditorApp')
     return allCe;
   };
 
+  var resetLessons = function() {
+    lessonOneUpdatedCe = lessonOneCe;
+    lessonTwoUpdatedCe = lessonTwoCe;
+    lessonThreeUpdatedCe = lessonThreeCe;
+
+    lessons.forEach(function(lesson) {
+      lesson.open = false;
+      lesson.passed = false;
+    });
+    lessons[0].passed = true;
+    lessons[1].open = true;
+    currentLesson = 1;
+
+    lessons[1].ce = lessonOneUpdatedCe;
+    lessons[2].ce = lessonTwoUpdatedCe;
+    lessons[3].ce = lessonThreeUpdatedCe;
+  };
+
+  var skip = function() {
+    resetLessons();
+    currentLesson = lessons.length - 1;
+    lessons[1].open = false;
+    lessons[currentLesson].open = true;
+    lessons[currentLesson].passed = true;
+  };
+
   var lessons = [{
     name: 'Base CE',
     desc: baseDesc,
@@ -243,7 +289,7 @@ angular.module('ceEditorApp')
   }, {
     name: 'One: Extending an instance',
     desc: lessonOneDesc,
-    ce: lessonOneCe,
+    ce: lessonOneUpdatedCe,
     open: true,
     complete: lessonOneComplete,
     next: lessonOneNext,
@@ -251,7 +297,7 @@ angular.module('ceEditorApp')
   }, {
     name: 'Two: Adding basic properties',
     desc: lessonTwoDesc,
-    ce: lessonTwoCe,
+    ce: lessonTwoUpdatedCe,
     open: false,
     complete: lessonTwoComplete,
     next: lessonTwoNext,
@@ -259,16 +305,25 @@ angular.module('ceEditorApp')
   }, {
     name: 'Three: Connecting instances',
     desc: lessonThreeDesc,
-    ce: lessonThreeCe,
+    ce: lessonThreeUpdatedCe,
     open: false,
     complete: lessonThreeComplete,
     next: lessonThreeNext,
+    passed: false
+  }, {
+    name: 'Playground',
+    desc: playgroundDesc,
+    ce: '',
+    open: false,
+    complete: playgroundComplete,
     passed: false
   }];
 
   return {
     lessons: lessons,
     getCurrentLesson: getCurrentLesson,
-    registerCallback: registerCallback
+    registerCallback: registerCallback,
+    resetLessons: resetLessons,
+    skip: skip
   };
 });

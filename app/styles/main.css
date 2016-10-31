@@ -109,15 +109,15 @@ code, pre {
 }
 
 .tutorial-buttons {
-  width: 40%;
-}
-
-.tutorial-buttons .btn {
   width: 100%;
 }
 
+.tutorial-buttons .btn {
+  width: 49%;
+}
+
 .edit-buttons {
-  width: 60%;
+  width: 100%;
 }
 
 .edit-buttons .btn {
@@ -205,6 +205,24 @@ code, pre {
 .nodes circle {
   stroke: #fff;
   stroke-width: 1.5px;
+}
+
+.externalLinks {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: white;
+  padding: 2px 8px;
+}
+
+.externalLinks a {
+  border-right: 1px solid #94c5c6;
+  padding-right: 5px;
+}
+
+.externalLinks a:last-of-type {
+  border-right: 0;
+  padding-right: 0;
 }
 
 /* Settings Modal */

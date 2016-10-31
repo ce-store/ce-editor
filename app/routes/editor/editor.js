@@ -3,11 +3,9 @@ angular.module('ceEditorApp')
 .controller('EditorCtrl', function ($scope, $http, $timeout, $interval, $q, $uibModal, ce, visuals, config, tutorial) {
   'use strict';
 
-  var delay = 1000;
-  var intervals = [];
+  // var intervals = [];
+  $scope.showTutorial = true;
 
-  $scope.writing = false;
-  $scope.ce = '';
   config.getConfig().then(function(cfg) {
     $scope.ceStore = cfg.data.store;
   });
@@ -20,51 +18,72 @@ angular.module('ceEditorApp')
 
   $scope.lessons[1].complete();
 
-  var getLatestCe = function() {
-    var ce = '';
-    $scope.lessons.forEach(function(lesson) {
-      if (lesson.passed) {
-        ce += lesson.ce;
-      }
+  $scope.resetTutorial = function() {
+    tutorial.resetLessons();
+    $scope.currentLesson = tutorial.getCurrentLesson();
+    $scope.lessons = tutorial.lessons;
+    $scope.lessons[1].complete();
+  };
+
+  $scope.skipTutorial = function() {
+    tutorial.skip();
+    var playground = $scope.lessons[$scope.lessons.length - 1];
+    $scope.lessons = [$scope.lessons[0], playground];
+    playground.complete();
+  };
+
+  $scope.openSettings = function() {
+    $uibModal.open({
+      templateUrl: '/routes/settings/settings.html',
+      controller: 'SettingsCtrl',
     });
-    return ce;
   };
 
-  var writeSentence = function(text) {
-    var deferred = $q.defer();
-    var letter = 0;
+  // var getLatestCe = function() {
+  //   var ce = '';
+  //   $scope.lessons.forEach(function(lesson) {
+  //     if (lesson.passed) {
+  //       ce += lesson.ce;
+  //     }
+  //   });
+  //   return ce;
+  // };
 
-    if ($scope.writing) {
-      intervals.push($interval(function() {
-        $scope.ce += text.slice(letter++, letter);
+  // var writeSentence = function(text) {
+  //   var deferred = $q.defer();
+  //   var letter = 0;
 
-        var editor = document.getElementById('editor');
-        editor.scrollTop = editor.scrollHeight;
+  //   if ($scope.writing) {
+  //     intervals.push($interval(function() {
+  //       $scope.ce += text.slice(letter++, letter);
 
-        if (letter === text.length) {
-          $scope.ce += '\n\n';
-          $scope.validate();
-          $scope.update();
+  //       var editor = document.getElementById('editor');
+  //       editor.scrollTop = editor.scrollHeight;
 
-          $timeout(function() {
-            deferred.resolve();
-          }, 1000);
-        }
-      }, 20, text.length));
-    } else {
-      deferred.reject();
-    }
+  //       if (letter === text.length) {
+  //         $scope.ce += '\n\n';
+  //         $scope.validate();
+  //         $scope.update();
 
-    return deferred.promise;
-  };
+  //         $timeout(function() {
+  //           deferred.resolve();
+  //         }, 1000);
+  //       }
+  //     }, 20, text.length));
+  //   } else {
+  //     deferred.reject();
+  //   }
 
-  var doAsyncSeries = function(arr) {
-    return arr.reduce(function (promise, text) {
-      return promise.then(function() {
-        return writeSentence(text);
-      });
-    }, $q.when());
-  };
+  //   return deferred.promise;
+  // };
+
+  // var doAsyncSeries = function(arr) {
+  //   return arr.reduce(function (promise, text) {
+  //     return promise.then(function() {
+  //       return writeSentence(text);
+  //     });
+  //   }, $q.when());
+  // };
 
   // Button Functions
 
@@ -109,24 +128,4 @@ angular.module('ceEditorApp')
   //     $scope.writing = false;
   //   });
   // };
-
-  $scope.openSettings = function() {
-    $uibModal.open({
-      templateUrl: '/routes/settings/settings.html',
-      controller: 'SettingsCtrl',
-    });
-  };
-
-  $timeout(function() {
-    // $scope.validate();
-  //   ce.get()
-  //     .then(function(response) {
-  //       var data = response.data.split(loadCe);
-  //       $scope.ce = data[data.length - 1];
-  //       visuals.update();
-  //       if ($scope.ce.length === 0) {
-  //         $scope.restart();
-  //       }
-  //     });
-  }, delay);
 });
