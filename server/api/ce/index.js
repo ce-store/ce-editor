@@ -11,6 +11,7 @@ router.get('/concepts', controller.getConcepts);
 router.get('/concept/:name', controller.getConcept);
 router.get('/rules', controller.getRules);
 router.get('/instance/:name', controller.getInstance);
+router.get('/instance/:name/references', controller.getInstanceReferences);
 
 router.post('/validate', controller.validate);
 router.post('/', controller.saveCe);

@@ -59,6 +59,10 @@ angular.module('ceEditorApp')
   var update = function() {
     // Get all things from model
     ce.getThings().then(function(response) {
+      if (!response) {
+        return;
+      }
+
       var allThings = response.data;
       things = [];
 

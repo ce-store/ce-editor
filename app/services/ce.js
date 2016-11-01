@@ -17,6 +17,13 @@ angular.module('ceEditorApp')
     });
   };
 
+  var getInstanceReferences = function(name) {
+    return $http({
+      method: 'GET',
+      url: 'api/instance/' + name + '/references'
+    });
+  };
+
   var getConcepts = function() {
     return $http({
       method: 'GET',
@@ -67,6 +74,7 @@ angular.module('ceEditorApp')
   return {
     getThings: getThings,
     getInstance: getInstance,
+    getInstanceReferences: getInstanceReferences,
     getConcepts: getConcepts,
     getConcept: getConcept,
     getRules: getRules,

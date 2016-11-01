@@ -282,6 +282,10 @@ code, pre {
   border-radius: 0;
 }
 
+.panel-collapse {
+  margin-bottom: 110px;
+}
+
 .lesson-panel {
   background: none;
   box-shadow: none;

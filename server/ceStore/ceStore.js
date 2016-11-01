@@ -81,6 +81,21 @@ function getInstance(id, name, cb) {
     });
 }
 
+function getInstanceReferences(id, name, cb) {
+  'use strict';
+  var url = ceStore + id + '/instances/' + name + '/references?style=normalised';
+  request
+    .get(url, function (err, response, body) {
+      if (err) {
+        cb(err);
+      } else if (response.statusCode !== 200) {
+        cb(new Error(response.statusCode + ' - ' + response.statusMessage));
+      } else {
+        cb(null, body);
+      }
+    });
+}
+
 function getConcepts(id, cb) {
   'use strict';
   var url = ceStore + id + '/concepts?style=summary';
@@ -176,6 +191,7 @@ module.exports = {
   deleteStore: deleteStore,
   getThings: getThings,
   getInstance: getInstance,
+  getInstanceReferences: getInstanceReferences,
   getConcepts: getConcepts,
   getConcept: getConcept,
   getRules: getRules,

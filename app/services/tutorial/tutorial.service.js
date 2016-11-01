@@ -48,7 +48,7 @@ angular.module('ceEditorApp')
     "<p>CE sentences are used for defining instances in the model.</p>" +
     "<p>Here's an example:</p>" +
     "<code>there is a thing named 'Andy Murray'.</code>" +
-    "<p>CE sentences always end in a full stop <code>.</code> and instance names need to be surrounded with single quotes <code>''</code> if they contain spaces.</p>" +
+    "<p>CE sentences always end in a full stop <code>.</code> and instance names need to be surrounded with single quotes <code>''</code> if they contain spaces, dots or quotes.</p>" +
     "<p>Instances can be extended to other concepts:</p>" +
     "<code>the thing 'Andy Murray' is a person.</code>" +
     "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Turn Andy into a tennis player</span></p>";
@@ -163,7 +163,7 @@ angular.module('ceEditorApp')
     "<p>It also gains a new property <code>plays with</code>, this property is a bit different as it accepts a <code>tennis player</code> instead of a regular string value. For example:</p>" +
     "<pre><code>the tennis player 'Andy Murray'\n" +
     "  plays with the tennis player 'Tim Henman'.</code></pre>" +
-    "<p>Note the concept prefix <code>tennis player</code> is required when specifying an instance property.</p>" +
+    "<p>Note the concept prefix <code>tennis player</code> is required when specifying an related instance.</p>" +
     "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Create a new tennis player that plays with Andy.</span></p>";
 
   var lessonThreeCe = "there is a tennis player named 'Andy Murray'.\n\n\n\n\n";
@@ -187,10 +187,25 @@ angular.module('ceEditorApp')
           if (instance['plays with']) {
             deferred.resolve();
             return;
+          } else {
+            ce.getInstanceReferences('Andy Murray').then(function(response) {
+              if (response && response.data.results) {
+                var results = response.data.results;
+
+                results.forEach(function(result) {
+                  if (result.property_name === 'plays with') {
+                    deferred.resolve();
+                    return;
+                  }
+                });
+
+                deferred.reject();
+              }
+
+              deferred.reject();
+            });
           }
         }
-
-        deferred.reject();
       });
     });
     return deferred.promise;
@@ -213,8 +228,7 @@ angular.module('ceEditorApp')
     "<p>Tildes <code>~</code> surround any user defined names, such as the name of the concept.</p>" +
     "<p>After the concept name is the letter <code>P</code>, this symbolises where the instance name would go in the instance definition.</p>" +
     "<p>It is not necessary to add any properties to your concept, they can always be added later.</p>" +
-    // "<p>The following lines define the properties. As these won't connect to other instances we use <code>the value</code> to describe the type (This can also be used in defining instances, but it's not necessary). Again, letters are used to define where the property name will appear, and we place the property name within the tildes.</p>"
-    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Create a new concept named 'spectator' and add a new spectator instance.</span></p>";
+    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Create a new concept named 'spectator' <strong>and</strong> add a new spectator instance.</span></p>";
 
   var lessonFourCe = "\n\n\n";
   var lessonFourUpdatedCe = lessonFourCe;
@@ -256,7 +270,7 @@ angular.module('ceEditorApp')
 
   // Lesson 5
 
-  var lessonFiveDesc = "<p>The CE-Store allows us to define the same concept or instance multiple times and will combine any differences.</p>" +
+  var lessonFiveDesc = "<p>The CE-Store allows us to define the same concept or instance multiple times and will combine all definitions.</p>" +
     "<p>So if we want to add some properties to an earlier definition, we can either edit the original definition, or write it again. This won't overwrite any properties of first definition.</p>" +
     "<p>So to extend the person definition, we can write:</p>" +
     "<pre><code>conceptualise a ~ person ~ P that\n" +
@@ -265,9 +279,9 @@ angular.module('ceEditorApp')
     "  ~ owns ~ the value O and\n" +
     "  ~ prefers ~ the value P.\n</code></pre>" +
     "<p>The lines following the <code>conceptualise</code> are property definitions.</p>" +
-    "<p>As these don't connect to other instances we use <code>the value</code> to describe the type (This can also be used in defining instances, but it's not necessary). Letter(s) are used to define where the property name will appear, and we place the property name within the tildes.</p>" +
+    "<p>As these don't connect to other instances we use <code>the value</code> to describe the type (This can also be used in defining instances, but it's not necessary). Letter(s) are used to define where the property value will appear, and we place the property name within the tildes.</p>" +
     "<p>The two types of property definitions are simply to make the resulting sentences more readable, they function in exactly the same way.</p>" +
-    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Extend your spectator concept to give your spectator some properties, including that the spectator 'watches' a tennis player.</span></p>";
+    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Extend your spectator concept to give your spectator some properties, including that the spectator 'watches' a tennis player. Make your spectator watch Andy Murray.</span></p>";
 
   var lessonFiveCe = "conceptualise a ~ spectator ~ S.\n\n\n";
   var lessonFiveUpdatedCe = lessonFiveCe;
@@ -336,7 +350,7 @@ angular.module('ceEditorApp')
     "  is a person and\n" +
     "  ~ plays with ~ the tennis player TP.</code></pre>" +
     "<p>The phrase <code>is a person</code> means that <code>person</code> becomes a parent concept of <code>tennis player</code>. A concept can have any number of parent or child concepts.</p>" +
-    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Extend your spectator concept to be a type of person and give your spectator a hair colour.</span></p>";
+    "<p><span class='glyphicon glyphicon-check'></span> <span class='lesson-task'>Task: Extend your spectator concept to be a type of person <strong>and</strong> give your spectator a hair colour.</span></p>";
 
   var lessonSixCe = "conceptualise a ~ spectator ~ S.\n\n\n";
   var lessonSixUpdatedCe = lessonSixCe;
