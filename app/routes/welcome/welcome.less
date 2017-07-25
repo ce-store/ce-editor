@@ -1,0 +1,16 @@
+@import (less) "../../styles/colors.less";
+@import (less) "../../styles/mixins.less";
+
+.ce-welcome {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: @blue-grey;
+  .gradient(@blue-grey-light, @blue-grey);
+  // background-image: url('../../../assets/images/batthern.png');
+  .ce-welcome-message {
+    margin-top: -100px;
+    text-align: center;
+  }
+}

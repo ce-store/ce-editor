@@ -11,11 +11,24 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css" />
     <link rel="stylesheet" href="bower_components/textAngular/dist/textAngular.css" />
+    <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="bower_components/codemirror/theme/ambiance.css">
+    <link rel="stylesheet" href="bower_components/codemirror/addon/hint/show-hint.css">
+    <link rel="stylesheet" href="bower_components/codemirror/addon/lint/lint.css">
 
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="less/styles/fonts.css">
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="less/styles/mixins.css">
+    <link rel="stylesheet" href="less/styles/common.css">
+
+    <link rel="stylesheet" href="less/directives/ce-editor/ce-editor.css">
+    <link rel="stylesheet" href="less/directives/ce-visualisation/ce-visualisation.css">
+    <link rel="stylesheet" href="less/routes/playground/playground.css">
+    <link rel="stylesheet" href="less/routes/tutorial/tutorial.css">
+    <link rel="stylesheet" href="less/routes/welcome/welcome.css">
     <!-- endbuild -->
   </head>
   <body ng-app="ceEditorApp">
@@ -24,10 +37,11 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div class="site-container">
+    <!--<div class="site-container">
       <div ui-view="editor" class="editor"></div>
       <div ui-view="visual" class="visual"></div>
-    </div>
+    </div>-->
+    <div ui-view class="site-container"></div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
     <script>
@@ -61,6 +75,11 @@
     <script src="bower_components/textAngular/dist/textAngular-sanitize.js"></script>
     <script src="bower_components/textAngular/dist/textAngularSetup.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/codemirror/lib/codemirror.js"></script>
+    <script src="bower_components/codemirror/addon/hint/show-hint.js"></script>
+    <script src="bower_components/codemirror/addon/selection/active-line.js"></script>
+    <script src="bower_components/codemirror-ce/addon/hint/ce-anyword-hint.js"></script>
+    <script src="bower_components/codemirror-ce/mode/ce/ce.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -69,9 +88,13 @@
 
     <script src="routes/visual/visual.js"></script>
     <script src="routes/editor/editor.js"></script>
+    <script src="routes/welcome/welcome.controller.js"></script>
+    <script src="routes/playground/playground.controller.js"></script>
     <script src="routes/settings/settings.controller.js"></script>
     <script src="routes/confirm/confirm.controller.js"></script>
 
+    <script src="directives/ce-editor/ce-editor.directive.js"></script>
+    <script src="directives/ce-visualisation/ce-visualisation.directive.js"></script>
     <script src="directives/elastic/elastic.directive.js"></script>
     <script src="directives/lesson/lesson.directive.js"></script>
 
