@@ -1,3 +1,7 @@
 <div class="ce-visualisation">
   <svg id="visual"></svg>
+  <div class="ce-visualisation-toggle">
+    <div ng-class="{'selected': type === 'model'}" ng-click="switchType('model')">Model</div>
+    <div ng-class="{'selected': type === 'instances'}" ng-click="switchType('instances')">Instances</div>
+  </div>
 </div>

@@ -1,3 +1,9 @@
 <div class="ce-editor">
-  <textarea id="code"></textarea>
+  <div class="ce-editor-cm">
+    <textarea id="code"></textarea>
+  </div>
+  <div class="ce-editor-status" ng-class="{'ok' : status.status === 'OK', 'processing' : status.status === 'Processing', 'error' : status.status === 'Error'}">
+    Status: {{ status.status }}<br>
+    {{ status.message }}
+  </div>
 </div>

@@ -56,6 +56,7 @@ function deleteStore(id, cb) {
 function getThings(id, cb) {
   'use strict';
   var url = ceStore + id + '/concepts/thing/instances?style=normalised';
+  console.log(url);
   request
     .get(url, function (err, response, body) {
       if (err) {
@@ -139,6 +140,8 @@ function postCe(id, ce, cb) {
   'use strict';
   ce = 'perform%20reset%20store. ' + ce;
   var url = ceStore + id + '/sources/generalCeForm?runRules=true&action=save';
+  console.log(url);
+  console.log(ce);
   request
     .post({url: url, body: ce}, function (err, response, body) {
       if (err) {

@@ -7,7 +7,8 @@ angular.module('ceEditorApp')
     restrict: 'E',
     replace: true,
     scope: {
-      ce: '='
+      ce: '=',
+      status: '='
     },
     templateUrl: 'directives/ce-editor/ce-editor.html',
     link: function (scope, element, attrs) {

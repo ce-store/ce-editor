@@ -91,11 +91,11 @@ function saveCe(req, res) {
   req.session.ce = req.body.ce;
   req.session.lessons = req.body.lessons;
 
-  ceStore.postCe(req.sessionID, req.body.ce, function(err) {
+  ceStore.postCe(req.sessionID, req.body.ce, function(err, resp) {
     if (err) {
-      res.sendStatus(500);
+      res.status(500).json(err);
     } else {
-      res.sendStatus(200);
+      res.status(200).json(resp);
     }
   });
 }
