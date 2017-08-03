@@ -11,6 +11,15 @@ angular.module('ceEditorApp')
       status: '='
     },
     templateUrl: 'directives/ce-visualisation/ce-visualisation.html',
+    controller: ['$scope', function($scope) {
+      $scope.options = {
+        showProperties: true
+      };
+
+      $scope.toggleOption = function(option) {
+        $scope.options[option] = !$scope.options[option];
+      };
+    }],
     link: function (scope, element, attrs) {
 
       /* TEST DATA */
@@ -19,6 +28,20 @@ conceptualise a ~ planet ~ P that has the value M as ~ mass ~.
 conceptualise a ~ moon ~ M that ~ orbits ~ the planet P.
 there is a planet named 'Earth' that has the value 1234 as mass.
 there is a moon named 'The Moon' that orbits the planet 'Earth'.
+
+
+conceptualise a ~ star ~ S that has the value M as ~ mass ~.
+conceptualise a ~ planet ~ P that ~ orbits ~ the star S and has the value M as ~ mass ~.
+conceptualise a ~ moon ~ M that ~ orbits ~ the planet P and has the value R as ~ radius ~.
+
+there is a star named 'The Sun' that has the value 22123 as mass.
+there is a planet named 'Earth' that orbits the star 'The Sun' and has the value 1234 as mass.
+there is a moon named 'The Moon' that orbits the planet 'Earth' and has the value 232 as radius.
+there is a planet named 'Jupiter' that orbits the star 'The Sun' and  that has the value 133 as mass.
+there is a moon named 'Europa' that orbits the planet 'Jupiter' and has the value 213 as radius.
+there is a planet named 'Saturn' that orbits the star 'The Sun' and  that has the value 123123 as mass.
+there is a planet named 'Mars' that orbits the star 'The Sun' and  that has the value 123123 as mass.
+there is a moon named 'Phobos' that orbits the planet 'Mars'.
       */
 
       scope.type = "model"; // || "instances"
@@ -58,6 +81,26 @@ there is a moon named 'The Moon' that orbits the planet 'Earth'.
       }
       create();
 
+      function triggerSimulation(graph) {
+        simulation = d3.forceSimulation()
+          .force('charge', d3.forceManyBody().strength(function (d) {
+            return d.type === 'property' ? -30 : -30;
+          }))
+          .force("center", d3.forceCenter(sizes.width / 2, sizes.height / 2))
+          .force('collide', d3.forceCollide().radius(scope.type==='model' ? 40 : 60).strength(scope.type==='model' ? 0.2 : 0.5))
+          .nodes(graph.nodes)
+          .force('link', d3.forceLink(graph.links)
+            .distance(function (d) {
+              return d.type === 'concept:property:value' ? 50 : 90;
+            })
+            .id(function (d) {
+              return d.id;
+            }))
+          .on('tick', ticked);
+      }
+
+
+
       /* Get latest CE and update the chart */
       function update(ce) {
         if (!ce) {
@@ -75,7 +118,7 @@ there is a moon named 'The Moon' that orbits the planet 'Earth'.
             .then(function(force) {
               return updateVis(force);
             });
-          /*ceService.validate(ce)
+          ceService.validate(ce)
             .then(function (validation) {
               console.log(validation);
               if (validation.data.structured_response.invalid_sentences > 0) {
@@ -91,7 +134,7 @@ there is a moon named 'The Moon' that orbits the planet 'Earth'.
             })
             .then(function (force) {
               // get the latest (valid) CE data and visualise it
-              updateVis(force);
+              // updateVis(force);
             })
             .catch(function (err) {
               console.error(err);
@@ -99,56 +142,91 @@ there is a moon named 'The Moon' that orbits the planet 'Earth'.
                 status: 'Error',
                 message: err
               };
-            });*/
+            });
         }
       }
 
       /* Update Chart */
       function updateVis(graph) {
+        console.log(graph);
+        // Bind the new data
         var node = svg.selectAll('.nodes')
           .selectAll("g.node")
           .data(graph.nodes);
 
-        // Nodes
-        var newNodes = node.enter()
-          .append("g")
-          .attr('class', 'node');
-
-        newNodes
-          .filter(function (d, i) {
+        // Nodes - UPDATE old nodes that may have changed type (property to concept for example)
+        var nonPropertyNodes = node.filter(function (d, i) {
             // create a circle for 'concepts', etc.
-            return d.type !== 'property';
-          })
-          .append('circle')
+            console.log(d3.select(this).select('rect').size() > 0);
+            return d.type !== 'property' && d3.select(this).select('rect').size() > 0;
+          });
+        nonPropertyNodes.select('rect').remove();
+        nonPropertyNodes.select('.node-shape').append('circle')
           .attr("r", sizes.node);
 
-        newNodes
-          .filter(function (d, i) {
+        var propertyNodes = node.filter(function (d, i) {
             // create a rect for 'properties'.
-            return d.type === 'property';
-          })
-          .append('rect')
+            console.log(d3.select(this).select('rect').size() > 0);
+            return d.type === 'property' && d3.select(this).select('circle').size() > 0;
+          });
+        propertyNodes.select('circle').remove();
+        propertyNodes.select('.node-shape').append('rect')
           .style('transform', 'translate(-' + sizes.node + 'px,-' + 0.5 * sizes.node + 'px)')
           .attr("height", sizes.node)
           .attr("width", 2 * sizes.node);
 
-        newNodes.append('text')
-          .style('transform', 'translate(0px,3px)');
+        // Nodes - ENTER
+        var newNodes = node.enter()
+          .append("g")
+          .attr('class', function(d) {
+            return 'node type-' + d.type;
+          });
+        // Add containes for the labels/shapes so that the z-index stays the same throughout the updating
+        newNodes.append('g').attr('class', 'node-shape');
+        newNodes.append('g').attr('class', 'node-label');
 
         newNodes
           .style('opacity', 0)
           .transition().duration(300)
           .style('opacity', 1);
 
+        var newNonPropertyNodes = newNodes
+          .filter(function (d, i) {
+            // create a circle for 'concepts', etc.
+            return d.type !== 'property';
+          });
+        newNonPropertyNodes.select('.node-shape')
+          .append('circle')
+          .attr("r", sizes.node);
+
+        var newPropertyNodes = newNodes
+          .filter(function (d, i) {
+            // create a rect for 'properties'.
+            return d.type === 'property';
+          });
+        newPropertyNodes.select('.node-shape')
+          .append('rect')
+          .style('transform', 'translate(-' + sizes.node + 'px,-' + 0.5 * sizes.node + 'px)')
+          .attr("height", sizes.node)
+          .attr("width", 2 * sizes.node);
+
+        newNodes.select('.node-label').append('text')
+          .style('transform', 'translate(0px,3px)');
+
+        // Nodes - Exit
         node.exit()
           .style('opacity', 1)
           .transition().duration(300)
           .style('opacity', 0)
           .remove();
 
+        // Nodes - Update All
         svg.selectAll('.nodes')
           .selectAll('g.node')
-          .selectAll('text')
+          .attr('class', function(d) {
+            return 'node type-' + d.type;
+          })
+          .select('text')
           .text(function (d) {
             return d.label || d.id;
           });
@@ -163,9 +241,14 @@ there is a moon named 'The Moon' that orbits the planet 'Earth'.
           .attr('class', 'link');
 
         newLinks.append('line');
-        newLinks.append('text').text(function (d) {
-          return d.property;
-        });
+        newLinks.append('text');
+
+        svg.selectAll('.links')
+          .selectAll('g.link')
+          .select('text')
+          .text(function (d) {
+            return d.property;
+          });
 
         newLinks
           .style('opacity', 0)
@@ -180,27 +263,14 @@ there is a moon named 'The Moon' that orbits the planet 'Earth'.
 
         // Simulation
         console.log('tick');
-        simulation = d3.forceSimulation()
-          .force('charge', d3.forceManyBody().strength(function (d) {
-            return d.type === 'property' ? -30 : -30;
-          }))
-          .force("center", d3.forceCenter(sizes.width / 2, sizes.height / 2))
-          .force('collide', d3.forceCollide().radius(40).strength(0.3))
-          .nodes(graph.nodes)
-          .force('link', d3.forceLink(graph.links)
-            .distance(function (d) {
-              return d.type === 'concept:property:value' ? 60 : 120;
-            })
-            .id(function (d) {
-              return d.id;
-            }))
-          .on('tick', ticked);
+        triggerSimulation(graph);
       }
 
       function ticked() {
-        svg.selectAll('.links')
-          .selectAll('.link')
-          .selectAll('line')
+        var links = svg.selectAll('.links')
+          .selectAll('.link');
+
+        links.select('line')
           .attr("x1", function (d) {
             return d.source.x;
           })
@@ -212,6 +282,14 @@ there is a moon named 'The Moon' that orbits the planet 'Earth'.
           })
           .attr("y2", function (d) {
             return d.target.y;
+          });
+
+        links.select('text')
+          .style('transform', function(d) {
+            console.log('update x');
+            var x = (d.source.x + d.target.x)/2;
+            var y = (d.source.y + d.target.y)/2;
+            return 'translate(' + x + 'px,' + y + 'px)';
           });
 
         svg.selectAll('.nodes')

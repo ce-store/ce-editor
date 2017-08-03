@@ -52,7 +52,7 @@ angular.module('ceEditorApp')
       });
 
       function updateScopeCE() {
-        scope.ce = editor.getValue('.').toString();
+        scope.ce = editor.getValue('').toString().replace(/\n/g,' ');
         scope.$apply();
       }
     }

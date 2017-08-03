@@ -17,6 +17,8 @@
       text {
         text-anchor: middle;
         font-size: 0.8em;
+        transition: opacity 0.2s;
+        -webkit-transition: opacity 0.2s;
       }
     }
     .links {
@@ -24,6 +26,88 @@
         stroke: #999;
         stroke-width: 3;
         stroke-opacity: 1;
+      }
+      text {
+        text-anchor: middle;
+        pointer-events: none;
+      }
+    }
+    &.hide-properties .links {
+      text {
+        opacity: 0;
+      }
+    }
+  }
+  .ce-visualisation-options {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #2f6d6e; //#191919;
+    color: white;
+    max-height: 48px;
+    width: 48px;
+    border-bottom-right-radius: 4px;
+    overflow: hidden;
+    transition: max-height 0.5s, width 0.5s;
+    -webkit-transition: max-height 0.5s, width 0.5s;
+    -webkit-transition-delay: 0.7s;
+    transition-delay: 0.7s;
+    h3 {
+      line-height: 48px;
+      height: 48px;
+      margin: 0px;
+      padding: 0px 11px;
+      i {
+        line-height: 48px;
+      }
+    }
+    &:hover {
+      width: 250px;
+      max-height: 200px;
+      -webkit-transition-delay: 0s;
+      transition-delay: 0s;
+    }
+    .ce-visualisation-options--row {
+      display: flex;
+      width: 250px;
+      height: 42px;
+      padding: 0px 12px;
+      cursor: pointer;
+      border-top: 1px solid black;
+      input {
+        display: none;
+      }
+      i {
+        line-height: 42px;
+        font-size: 1.6em;
+        opacity: 0.3;
+      }
+      label {
+        line-height: 42px;
+        margin: 0px;
+        margin-top: 1px;
+        margin-left: 12px;
+        font-weight: normal;
+        pointer-events: none;
+        opacity: 0.3;
+      }
+      &:hover {
+        i,
+        label {
+          opacity: 0.4;
+        }
+      }
+      &.selected {
+        i,
+        label {
+          opacity: 1;
+        }
+      }
+      &.selected:hover {
+        i,
+        label {
+          opacity: 0.9;
+        }
       }
     }
   }
