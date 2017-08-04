@@ -11,12 +11,12 @@ angular.module('ceEditorApp')
       status: '='
     },
     templateUrl: 'directives/ce-visualisation/ce-visualisation.html',
-    controller: ['$scope', function($scope) {
+    controller: ['$scope', function ($scope) {
       $scope.options = {
         showProperties: true
       };
 
-      $scope.toggleOption = function(option) {
+      $scope.toggleOption = function (option) {
         $scope.options[option] = !$scope.options[option];
       };
     }],
@@ -87,7 +87,7 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
             return d.type === 'property' ? -30 : -30;
           }))
           .force("center", d3.forceCenter(sizes.width / 2, sizes.height / 2))
-          .force('collide', d3.forceCollide().radius(scope.type==='model' ? 40 : 60).strength(scope.type==='model' ? 0.2 : 0.5))
+          .force('collide', d3.forceCollide().radius(scope.type === 'model' ? 40 : 60).strength(scope.type === 'model' ? 0.2 : 0.5))
           .nodes(graph.nodes)
           .force('link', d3.forceLink(graph.links)
             .distance(function (d) {
@@ -115,7 +115,7 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
             message: 'Checking if CE is valid'
           };
           ceToForceData(ce)
-            .then(function(force) {
+            .then(function (force) {
               return updateVis(force);
             });
           ceService.validate(ce)
@@ -156,19 +156,17 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
 
         // Nodes - UPDATE old nodes that may have changed type (property to concept for example)
         var nonPropertyNodes = node.filter(function (d, i) {
-            // create a circle for 'concepts', etc.
-            console.log(d3.select(this).select('rect').size() > 0);
-            return d.type !== 'property' && d3.select(this).select('rect').size() > 0;
-          });
+          // create a circle for 'concepts', etc.
+          return d.type !== 'property' && d3.select(this).select('rect').size() > 0;
+        });
         nonPropertyNodes.select('rect').remove();
         nonPropertyNodes.select('.node-shape').append('circle')
           .attr("r", sizes.node);
 
         var propertyNodes = node.filter(function (d, i) {
-            // create a rect for 'properties'.
-            console.log(d3.select(this).select('rect').size() > 0);
-            return d.type === 'property' && d3.select(this).select('circle').size() > 0;
-          });
+          // create a rect for 'properties'.
+          return d.type === 'property' && d3.select(this).select('circle').size() > 0;
+        });
         propertyNodes.select('circle').remove();
         propertyNodes.select('.node-shape').append('rect')
           .style('transform', 'translate(-' + sizes.node + 'px,-' + 0.5 * sizes.node + 'px)')
@@ -178,7 +176,7 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
         // Nodes - ENTER
         var newNodes = node.enter()
           .append("g")
-          .attr('class', function(d) {
+          .attr('class', function (d) {
             return 'node type-' + d.type;
           });
         // Add containes for the labels/shapes so that the z-index stays the same throughout the updating
@@ -223,7 +221,7 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
         // Nodes - Update All
         svg.selectAll('.nodes')
           .selectAll('g.node')
-          .attr('class', function(d) {
+          .attr('class', function (d) {
             return 'node type-' + d.type;
           })
           .select('text')
@@ -285,10 +283,10 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           });
 
         links.select('text')
-          .style('transform', function(d) {
+          .style('transform', function (d) {
             console.log('update x');
-            var x = (d.source.x + d.target.x)/2;
-            var y = (d.source.y + d.target.y)/2;
+            var x = (d.source.x + d.target.x) / 2;
+            var y = (d.source.y + d.target.y) / 2;
             return 'translate(' + x + 'px,' + y + 'px)';
           });
 
@@ -357,18 +355,20 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
             type: c._type,
             properties: c.direct_property_names
           });
-          c.direct_property_names.forEach(function (p) {
-            graph.nodes.push({
-              id: c._id + ':' + p,
-              label: p,
-              type: 'property'
+          if (c.direct_property_names) {
+            c.direct_property_names.forEach(function (p) {
+              graph.nodes.push({
+                id: c._id + ':' + p,
+                label: p,
+                type: 'property'
+              });
+              graph.links.push({
+                source: c._id,
+                target: c._id + ':' + p,
+                type: 'concept:property:value',
+              });
             });
-            graph.links.push({
-              source: c._id,
-              target: c._id + ':' + p,
-              type: 'concept:property:value',
-            });
-          });
+          }
         });
         return graph;
       }
