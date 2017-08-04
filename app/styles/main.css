@@ -3,31 +3,14 @@ html, body {
   margin: 0;
 }
 
-h1 {
-  font-family: Anton;
-  color: #34A5DA;
-  font-size: 52px;
-  text-align: center;
-}
-
 textarea {
   resize: none;
 }
 
-@font-face {
-  font-family: GistUpright;
-  src: url(../assets/fonts/GistUpright.otf);
-}
-
-@font-face {
-  font-family: Anton;
-  src: url(../assets/fonts/Anton.ttf);
-}
-
-.site-container {
+/*.site-container {
   display: flex;
   height: 100%;
-}
+}*/
 
 a {
   color: #5dc1f1;

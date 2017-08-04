@@ -1,0 +1,15 @@
+<div class="ce-visualisation">
+  <svg id="visual" ng-class="{'hide-properties' : !options.showProperties}"></svg>
+  <div class="ce-visualisation-options">
+    <h3><i class="glyphicon glyphicon-menu-hamburger"></i></h3>
+    <div class="ce-visualisation-options--row" ng-class="{'selected' : options.showProperties}" ng-click="toggleOption('showProperties')">
+      <input type="checkbox" ng-model="options.showProperties">
+      <i class="glyphicon glyphicon-eye-open"></i>
+      <label>Show Property Labels</label>
+    </div>
+  </div>
+  <div class="ce-visualisation-toggle">
+    <div ng-class="{'selected': type === 'model'}" ng-click="switchType('model')">Model</div>
+    <div ng-class="{'selected': type === 'instances'}" ng-click="switchType('instances')">Instances</div>
+  </div>
+</div>

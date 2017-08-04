@@ -11,8 +11,23 @@ angular.module('ceEditorApp', [
   $urlRouterProvider.otherwise('');
 
   $stateProvider
-    .state('index', {
+    .state('welcome', {
       url: '',
+      templateUrl: 'routes/welcome/welcome.html',
+      controller: 'WelcomeCtrl'
+    })
+    .state('playground', {
+      url: '/playground',
+      templateUrl: 'routes/playground/playground.html',
+      controller: 'PlaygroundCtrl'
+    })
+    .state('tutorial', {
+      url: '/tutorial',
+      templateUrl: 'routes/tutorial/tutorial.html',
+      abstract: true
+    })
+    .state('tutorial.editor', {
+      url: '/editor',
       views: {
         'editor': {
           templateUrl: 'routes/editor/editor.html',

@@ -1,6 +1,7 @@
 var cfenv = require('cfenv');
 var express = require('express');
 var session = require('express-session');
+var expressLess = require('express-less');
 var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
@@ -27,6 +28,19 @@ app.use('/assets', express.static(path.join(__dirname, '../app', 'assets')));
 app.use('/routes', express.static(path.join(__dirname, '../app', 'routes')));
 app.use('/services', express.static(path.join(__dirname, '../app', 'services')));
 app.use('/styles', express.static(path.join(__dirname, '../app', 'styles')));
+
+app.use('/less/*', function (req, res, next) {
+  "use strict";
+  var url = req.originalUrl;
+  var relativePath = url.replace('less/', '');
+  var lessCSSFile = '../app' + relativePath;
+  req.url = lessCSSFile;
+  var expressLessObj = expressLess(__dirname, {
+    compress: true,
+    debug: true
+  });
+  expressLessObj(req, res, next);
+});
 
 app.use('/api', require('./api/ce'));
 app.use('/config', require('./api/config'));

@@ -11,6 +11,7 @@
     "body-parser": "^1.15.2",
     "cfenv": "1.0.x",
     "express": "^4.14.0",
+    "express-less": "^0.1.0",
     "express-session": "^1.14.1",
     "lodash": "^4.16.4",
     "node-cache": "^4.1.0",

@@ -1,0 +1,25 @@
+.ce-editor {
+  display: flex;
+  flex-direction: column;
+  .ce-editor-cm {
+    height: 100%;
+    .CodeMirror {
+      height: 100%;
+    }
+  }
+  .ce-editor-status {
+    height: 50px;
+    background: black;
+    color: #cccaca;
+    padding: 6px;
+    &.ok {
+      color: #6fef5f;
+    }
+    &.processing {
+      color: #ec9147;
+    }
+    &.error {
+      color: #ec4747;
+    }
+  }
+}
