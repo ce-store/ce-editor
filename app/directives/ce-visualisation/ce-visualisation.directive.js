@@ -52,6 +52,7 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
       };
 
       var svg;
+      var zoom;
       var simulation;
       var sizes = {
         width: 0,
@@ -78,6 +79,12 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           .attr("class", "links");
         svg.append("g")
           .attr("class", "nodes");
+
+        zoom = d3.zoom()
+          .scaleExtent([0.4, 2])
+          .on("zoom", zoomed);
+
+        svg.call(zoom);
       }
       create();
 
@@ -120,7 +127,6 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
             });
           ceService.validate(ce)
             .then(function (validation) {
-              console.log(validation);
               if (validation.data.structured_response.invalid_sentences > 0) {
                 throw Error('CE is invalid.');
               } else {
@@ -148,7 +154,6 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
 
       /* Update Chart */
       function updateVis(graph) {
-        console.log(graph);
         // Bind the new data
         var node = svg.selectAll('.nodes')
           .selectAll("g.node")
@@ -224,6 +229,15 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           .attr('class', function (d) {
             return 'node type-' + d.type;
           })
+          .on('click', function (d) {
+            console.log(d);
+          })
+          .on('mouseenter', function (d) {
+            highlightConnections(d);
+          })
+          .on('mouseleave', function () {
+            highlightConnections();
+          })
           .select('text')
           .text(function (d) {
             return d.label || d.id;
@@ -260,7 +274,6 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           .remove();
 
         // Simulation
-        console.log('tick');
         triggerSimulation(graph);
       }
 
@@ -284,7 +297,6 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
 
         links.select('text')
           .style('transform', function (d) {
-            console.log('update x');
             var x = (d.source.x + d.target.x) / 2;
             var y = (d.source.y + d.target.y) / 2;
             return 'translate(' + x + 'px,' + y + 'px)';
@@ -299,10 +311,51 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           });
       }
 
+      function zoomed() {
+        svg.select('.links').attr("transform", d3.event.transform);
+        svg.select('.nodes').attr("transform", d3.event.transform);
+      }
+
       /* Resize the chart based on screen/svg size*/
       function updateSize() {
         sizes.width = svg.node().clientWidth;
         sizes.height = svg.node().clientHeight;
+      }
+
+      function highlightConnections(node) {
+        console.log(node);
+        var duration = 200;
+        if (node) {
+          var connections = [];
+          svg.select('.links')
+            .selectAll('.link')
+            .filter(function (d) {
+              if (d.source.id === node.id) {
+                connections.push(d.target.id);
+              } else if (d.target.id === node.id) {
+                connections.push(d.source.id);
+              }
+              return d.source.id !== node.id && d.target.id !== node.id;
+            })
+            .transition().duration(duration)
+            .style('opacity', 0.2)
+
+          svg.select('.nodes')
+            .selectAll('.node')
+            .filter(function (d) {
+              console.log(d.id, node.id);
+              return d.id !== node.id && connections.indexOf(d.id) === -1;
+            })
+            .transition().duration(duration)
+            .style('opacity', 0.2)
+        } else {
+          svg.select('.nodes').selectAll('.node')
+            .transition().duration(duration)
+            .style('opacity', 1)
+          svg.select('.links').selectAll('.link')
+            .transition().duration(duration)
+            .style('opacity', 1)
+        }
       }
 
       /*
@@ -392,12 +445,10 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           };
           graph.nodes.push(node);
         });
-        console.log(graph.nodes);
         // Instances - Links
         instances.forEach(function (i) {
           Object.keys(i).forEach(function (k) {
             if (k.indexOf('_') !== 0) {
-              console.log(k, i[k]);
               if (things.indexOf(i[k]) > -1) {
                 // the value of this key is another concept
                 graph.links.push({
