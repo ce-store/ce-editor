@@ -52,6 +52,7 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
       };
 
       var svg;
+      var zoom;
       var simulation;
       var sizes = {
         width: 0,
@@ -78,6 +79,12 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           .attr("class", "links");
         svg.append("g")
           .attr("class", "nodes");
+
+        zoom = d3.zoom()
+          .scaleExtent([0.4, 2])
+          .on("zoom", zoomed);
+
+        svg.call(zoom);
       }
       create();
 
@@ -120,7 +127,6 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
             });
           ceService.validate(ce)
             .then(function (validation) {
-              console.log(validation);
               if (validation.data.structured_response.invalid_sentences > 0) {
                 throw Error('CE is invalid.');
               } else {
@@ -148,7 +154,6 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
 
       /* Update Chart */
       function updateVis(graph) {
-        console.log(graph);
         // Bind the new data
         var node = svg.selectAll('.nodes')
           .selectAll("g.node")
@@ -260,7 +265,6 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           .remove();
 
         // Simulation
-        console.log('tick');
         triggerSimulation(graph);
       }
 
@@ -284,7 +288,6 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
 
         links.select('text')
           .style('transform', function (d) {
-            console.log('update x');
             var x = (d.source.x + d.target.x) / 2;
             var y = (d.source.y + d.target.y) / 2;
             return 'translate(' + x + 'px,' + y + 'px)';
@@ -297,6 +300,11 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
             // var y = Math.max(sizes.node, Math.min(sizes.height - sizes.node, d.y));
             return 'translate(' + d.x + ',' + d.y + ')';
           });
+      }
+
+      function zoomed() {
+        svg.select('.links').attr("transform", d3.event.transform);
+        svg.select('.nodes').attr("transform", d3.event.transform);
       }
 
       /* Resize the chart based on screen/svg size*/
@@ -392,12 +400,10 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           };
           graph.nodes.push(node);
         });
-        console.log(graph.nodes);
         // Instances - Links
         instances.forEach(function (i) {
           Object.keys(i).forEach(function (k) {
             if (k.indexOf('_') !== 0) {
-              console.log(k, i[k]);
               if (things.indexOf(i[k]) > -1) {
                 // the value of this key is another concept
                 graph.links.push({
