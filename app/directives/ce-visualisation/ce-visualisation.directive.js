@@ -229,6 +229,15 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
           .attr('class', function (d) {
             return 'node type-' + d.type;
           })
+          .on('click', function (d) {
+            console.log(d);
+          })
+          .on('mouseenter', function (d) {
+            highlightConnections(d);
+          })
+          .on('mouseleave', function () {
+            highlightConnections();
+          })
           .select('text')
           .text(function (d) {
             return d.label || d.id;
@@ -311,6 +320,42 @@ there is a moon named 'Phobos' that orbits the planet 'Mars'.
       function updateSize() {
         sizes.width = svg.node().clientWidth;
         sizes.height = svg.node().clientHeight;
+      }
+
+      function highlightConnections(node) {
+        console.log(node);
+        var duration = 200;
+        if (node) {
+          var connections = [];
+          svg.select('.links')
+            .selectAll('.link')
+            .filter(function (d) {
+              if (d.source.id === node.id) {
+                connections.push(d.target.id);
+              } else if (d.target.id === node.id) {
+                connections.push(d.source.id);
+              }
+              return d.source.id !== node.id && d.target.id !== node.id;
+            })
+            .transition().duration(duration)
+            .style('opacity', 0.2)
+
+          svg.select('.nodes')
+            .selectAll('.node')
+            .filter(function (d) {
+              console.log(d.id, node.id);
+              return d.id !== node.id && connections.indexOf(d.id) === -1;
+            })
+            .transition().duration(duration)
+            .style('opacity', 0.2)
+        } else {
+          svg.select('.nodes').selectAll('.node')
+            .transition().duration(duration)
+            .style('opacity', 1)
+          svg.select('.links').selectAll('.link')
+            .transition().duration(duration)
+            .style('opacity', 1)
+        }
       }
 
       /*
