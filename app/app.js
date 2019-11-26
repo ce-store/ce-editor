@@ -1,3 +1,4 @@
+angular.lowercase = text => function(text){ return text.toLowerCase(); };
 angular.module('ceEditorApp', [
   'ui.router',
   'ui.bootstrap',
